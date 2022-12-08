@@ -5,6 +5,7 @@ context = canvas.getContext("2d");
 
 let height;
 let width;
+let widthInt = parseInt(width);
 let windowWidth;
 let windowHeight;
 width = gameContainer.offsetWidth;
@@ -17,6 +18,7 @@ canvas.setAttribute("width", width);
 const CanvasResize = () => {
 	width = gameContainer.offsetWidth;
 	height = gameContainer.offsetHeight;
+	widthInt = parseInt(width);
 	windowWidth = body.offsetWidth;
 	windowHeight = body.offsetHeight;
 	canvas.setAttribute("height", height);
@@ -48,6 +50,7 @@ class Ball {
 		this.blockIndex = { x1: 0, y1: 0, x2: 0, y2: 0 };
 		// x1, y1, x2, y2 are not point, index
 		this.speed = 0; // per frame
+		this.ballWidth = 0.02 * width;
 		this.color = "#c1cf94";
 		this.addList();
 		this.brokenBlock = new Array(); // this list for will be broken block
@@ -77,26 +80,26 @@ class Ball {
 		// this.blockIndex.y2 = parseInt((this.coordinate.y - 13 + 10) / 11);
 
 		this.blockIndex.x1 = parseInt(
-			((this.coordinate.x + width / 40) / width) * 18
+			((this.coordinate.x + widthInt / 40) / widthInt) * 18
 		);
-		this.blockIndex.y1 = parseInt((this.coordinate.y / width) * 36);
+		this.blockIndex.y1 = parseInt((this.coordinate.y / widthInt) * 36);
 		this.blockIndex.x2 = parseInt(
-			((this.coordinate.x + width / 20 + width / 40) / width) * 18
+			((this.coordinate.x + widthInt * 0.02 + widthInt / 40) / widthInt) * 18
 		);
 		this.blockIndex.y2 = parseInt(
-			((this.coordinate.y + width / 40) / width) * 36
+			((this.coordinate.y + widthInt * 0.02) / widthInt) * 36
 		);
-		console.log(
-			"x1",
-			this.blockIndex.x1,
-			"y1",
-			this.blockIndex.y1,
-			"x2",
-			this.blockIndex.x2,
-			"y2",
-			this.blockIndex.x1
-		);
-		// the diameter of the ball is 10px
+		// console.log(
+		// 	"x1",
+		// 	this.blockIndex.x1,
+		// 	"y1",
+		// 	this.blockIndex.y1,
+		// 	"x2",
+		// 	this.blockIndex.x2,
+		// 	"y2",
+		// 	this.blockIndex.x1
+		// );
+		// the diameter of the ball is 0.02 width
 
 		// drawRectangle(
 		//   13 + this.index.x * 20,
@@ -127,9 +130,9 @@ class Ball {
 			this.setAngle(360 - this.angle);
 			playSound("click");
 		} else if (
-			this.coordinate.y + 10 > height * 0.9 &&
-			this.coordinate.y + 10 < height * 0.91 &&
-			this.coordinate.x + 10 > movableStick.x1 &&
+			this.coordinate.y + width * 0.02 > height * 0.9 &&
+			this.coordinate.y + width * 0.02 < height * 0.91 &&
+			this.coordinate.x + width * 0.02 > movableStick.x1 &&
 			this.coordinate.x < movableStick.x2
 		) {
 			let newDegree = Math.abs(
@@ -385,10 +388,10 @@ class Block {
 	}
 	draw() {
 		drawRectangle(
-			this.index.x * parseInt(width / 18) - width / 40,
-			this.index.y * parseInt(width / 36),
-			width / 20,
-			width / 40,
+			(this.index.x * widthInt) / 18 - widthInt / 40,
+			(this.index.y * widthInt) / 36,
+			widthInt / 20,
+			widthInt / 40,
 			this.color
 		);
 	}
