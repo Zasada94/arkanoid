@@ -1,8 +1,29 @@
 // canvas
-const canvas = document.getElementById("canvas");
-const context = canvas.getContext("2d");
-canvas.width = 405;
-canvas.height = 600;
+canvas = document.getElementById("canvas");
+body = document.getElementById("body");
+context = canvas.getContext("2d");
+
+let height;
+let width;
+let windowWidth;
+let windowHeight;
+width = gameContainer.offsetWidth;
+height = gameContainer.offsetHeight;
+windowWidth = body.offsetWidth;
+windowHeight = body.offsetHeight;
+canvas.setAttribute("height", height);
+canvas.setAttribute("width", width);
+
+const CanvasResize = () => {
+	width = gameContainer.offsetWidth;
+	height = gameContainer.offsetHeight;
+	windowWidth = body.offsetWidth;
+	windowHeight = body.offsetHeight;
+	canvas.setAttribute("height", height);
+	canvas.setAttribute("width", width);
+};
+CanvasResize();
+window.addEventListener("resize", CanvasResize);
 
 let numberOfUnbrokenBlocks;
 let numberOfBall;
@@ -47,28 +68,67 @@ class Ball {
 	removeList() {}
 	draw() {
 		// to catch current block index
-		this.blockIndex.x1 = parseInt((this.coordinate.x - 13) / 20);
-		this.blockIndex.y1 = parseInt((this.coordinate.y - 13) / 11);
-		this.blockIndex.x2 = parseInt((this.coordinate.x - 13 + 10) / 20);
-		this.blockIndex.y2 = parseInt((this.coordinate.y - 13 + 10) / 11);
+		// this.blockIndex.x1 = parseInt((this.coordinate.x - 13) / 20);
+
+		// this.blockIndex.y1 = parseInt((this.coordinate.y - 13) / 11);
+
+		// this.blockIndex.x2 = parseInt((this.coordinate.x - 13 + 10) / 20);
+
+		// this.blockIndex.y2 = parseInt((this.coordinate.y - 13 + 10) / 11);
+
+		this.blockIndex.x1 = parseInt(
+			((this.coordinate.x + width / 40) / width) * 18
+		);
+		this.blockIndex.y1 = parseInt((this.coordinate.y / width) * 36);
+		this.blockIndex.x2 = parseInt(
+			((this.coordinate.x + width / 20 + width / 40) / width) * 18
+		);
+		this.blockIndex.y2 = parseInt(
+			((this.coordinate.y + width / 40) / width) * 36
+		);
+		console.log(
+			"x1",
+			this.blockIndex.x1,
+			"y1",
+			this.blockIndex.y1,
+			"x2",
+			this.blockIndex.x2,
+			"y2",
+			this.blockIndex.x1
+		);
 		// the diameter of the ball is 10px
 
-		drawCircle(this.coordinate.x, this.coordinate.y, 5, this.color);
+		// drawRectangle(
+		//   13 + this.index.x * 20,
+		//   13 + this.index.y * 11,
+		//   19,
+		//   10,
+		//   this.color
+		// );
+		// drawRectangle(
+		// 	this.index.x * parseInt(width / 18)-width/40,
+		// 	this.index.y * parseInt(width / 36),
+		// 	width / 20,
+		// 	width / 40,
+		// 	this.color
+		// );
+
+		drawCircle(this.coordinate.x, this.coordinate.y, 0.01 * width, this.color);
 		this.coordinate.x += this.route.x;
 		this.coordinate.y += this.route.y;
-		if (this.coordinate.x > 385 && this.route.x > 0) {
+		if (this.coordinate.x > 0.97 * width && this.route.x > 0) {
 			this.setAngle(180 - this.angle);
 			playSound("click");
-		} else if (this.coordinate.x < 10 && this.route.x < 0) {
+		} else if (this.coordinate.x < 0.01 * width && this.route.x < 0) {
 			this.setAngle(180 - this.angle);
 			playSound("click");
 		}
-		if (this.coordinate.y < 10 && this.route.y < 0) {
+		if (this.coordinate.y < 0.01 * height && this.route.y < 0) {
 			this.setAngle(360 - this.angle);
 			playSound("click");
 		} else if (
-			this.coordinate.y + 10 > 500 &&
-			this.coordinate.y + 10 < 505 &&
+			this.coordinate.y + 10 > height * 0.9 &&
+			this.coordinate.y + 10 < height * 0.91 &&
 			this.coordinate.x + 10 > movableStick.x1 &&
 			this.coordinate.x < movableStick.x2
 		) {
@@ -84,7 +144,7 @@ class Ball {
 			score += Math.pow(multipleBlock, 2);
 			multipleBlock = 0;
 			playSound("click");
-		} else if (this.coordinate.y > 550) {
+		} else if (this.coordinate.y > height * 0.9) {
 			this.route.x = this.route.y = this.speed = 0;
 			this.coordinate.x = -10;
 			this.coordinate.y = -10;
@@ -285,7 +345,7 @@ class Ball {
 		clearBallList();
 
 		// reset for new level and game
-		movableStick.width = 75;
+		movableStick.width = width / 6;
 		superBall(false);
 		// ^ reset for new level and game
 		controlForGameOver();
@@ -325,13 +385,22 @@ class Block {
 	}
 	draw() {
 		drawRectangle(
-			13 + this.index.x * 20,
-			13 + this.index.y * 11,
-			19,
-			10,
+			this.index.x * parseInt(width / 18) - width / 40,
+			this.index.y * parseInt(width / 36),
+			width / 20,
+			width / 40,
 			this.color
 		);
 	}
+
+	// drawRectangle(
+	//   13 + this.index.x * 20,
+	//   13 + this.index.y * 11,
+	//   19,
+	//   10,
+	//   this.color
+	// );
+
 	explode() {
 		playSound("blockCrush");
 		blockList[this.indexInBlockList] = null;
@@ -460,18 +529,36 @@ function clearBlockList() {
 }
 
 // default
-let topStick = new Stick(10, 10, 395, 10, "#638379");
-let leftStick = new Stick(10, 10, 10, 550, "#638379");
-let rightStick = new Stick(395, 10, 395, 550, "#638379");
+let topStick = new Stick(
+	0.01 * width,
+	0.01 * width,
+	0.99 * width,
+	0.01 * width,
+	"#638379"
+);
+let leftStick = new Stick(
+	0.01 * width,
+	0.01 * width,
+	0.01 * width,
+	0.99 * height,
+	"#638379"
+);
+let rightStick = new Stick(
+	0.99 * width,
+	0.01 * width,
+	0.99 * width,
+	0.99 * height,
+	"#638379"
+);
 
 let movableStick = new Stick(
-	(canvas.width - 75) / 2,
-	500,
-	(canvas.width - 75) / 2 + 75,
-	500,
+	width / 2 - width / 12,
+	0.9 * height,
+	width / 2 + width / 12,
+	0.9 * height,
 	"#e38c95"
 );
-movableStick.width = movableStick.x2 - movableStick.x1;
+movableStick.width = width / 6;
 
 function getCoor(e) {
 	if (!paused) {
@@ -531,50 +618,76 @@ function drawGame() {
 }
 
 function drawWelcome() {
-	drawText("Arkark", "#d9effc", "50px Saira Stencil One", 120, 275);
+	drawText(
+		"Arkanoid",
+		"#d9effc",
+		"50px Saira Stencil One",
+		width / 4,
+		height / 4
+	);
 }
 
 function drawGameOver() {
-	drawText("Game Over", "#f46f47", "32px Noto Sans", 120, 300);
-	drawText("Score " + score, "#ddd", "24px Noto Sans", 125, 350);
+	drawText("Game Over", "#f46f47", "32px Noto Sans", width / 4, height / 4);
+	drawText("Score " + score, "#ddd", "24px Noto Sans", width / 4, height / 4);
 }
 
 function drawTheEnd() {
-	drawText("The End", "#61cdff", "50px Saira Stencil One", 120, 300);
-	drawText("Score " + score, "#ddd", "24px Noto Sans", 125, 350);
+	drawText(
+		"The End",
+		"#61cdff",
+		"50px Saira Stencil One",
+		width / 4,
+		height / 4
+	);
+	drawText("Score " + score, "#ddd", "24px Noto Sans", width / 4, height / 4);
 }
 
 // bar
 function drawBoard() {
 	// level
-	drawText("Level " + level + " / 12", "#eee", "16px Noto Sans", 260, 580);
+	drawText(
+		"Level " + level + " / 12",
+		"#eee",
+		"16px Noto Sans",
+		width * 0.7,
+		height * 0.965
+	);
 
 	// number of ball
-	drawCircle(165, 570, 5, "#c1cf94");
-	drawText("x " + numberOfBall, "#eee", "16px Noto Sans", 180, 580);
+	drawCircle(width * 0.4, height * 0.95, width * 0.01, "#c1cf94");
+	drawText(
+		"x " + numberOfBall,
+		"#eee",
+		"16px Noto Sans",
+		width * 0.5,
+		height * 0.965
+	);
 
 	// score
-	drawText("Score " + score, "#eee", "16px Noto Sans", 30, 580);
+	drawText(
+		"Score " + score,
+		"#eee",
+		"16px Noto Sans",
+		width * 0.1,
+		height * 0.965
+	);
 
 	// pause
 	if (paused) {
-		drawPng("img/play.png", 370, 565);
-		drawText("Paused", "#e38c95", "50px Noto Sans", 120, 275);
+		drawPng("img/play.png", width * 0.9, height * 0.95);
+		drawText("Paused", "#e38c95", "50px Noto Sans", 0.4 * width, 0.4 * height);
 	} else {
-		drawPng("img/pause.png", 370, 565);
+		drawPng("img/pause.png", width * 0.9, height * 0.95);
 	}
 }
 
 function drawPlayButton() {
-	drawText("Play", "#ddd", "25px Noto Sans", 340, 580);
+	drawText("Play", "#ddd", "25px Noto Sans", width * 0.6, height * 0.6);
 }
 
 function toClick() {
-	if (
-		drawBar == drawPlayButton &&
-		x > (window.innerWidth - canvas.width) / 2 + 340 &&
-		y > 558
-	) {
+	if (drawBar == drawPlayButton && x > width * 0.5 && y > height * 0.5) {
 		play();
 	} else if (drawMain == drawGame && y < 550) {
 		start();

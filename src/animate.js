@@ -2,10 +2,10 @@ let ballList = []; // ball list in the canvas
 let stickList = [];
 let blockList = []; // block index list
 let boxList = [];
-let mapGrid = new Array(20);
 
+let mapGrid = new Array(1000);
 for (var i = 0; i < mapGrid.length; i++) {
-	mapGrid[i] = new Array(30);
+	mapGrid[i] = new Array(1000);
 }
 
 function clearMapGrid() {

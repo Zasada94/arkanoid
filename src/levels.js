@@ -37,6 +37,17 @@ let colors = [
 	"#9f6b53",
 ];
 
+canvas = document.getElementById("canvas");
+body = document.getElementById("body");
+context = canvas.getContext("2d");
+
+width = gameContainer.offsetWidth;
+height = gameContainer.offsetHeight;
+windowWidth = body.offsetWidth;
+windowHeight = body.offsetHeight;
+canvas.setAttribute("height", height);
+canvas.setAttribute("width", width);
+
 let levels = {
 	1: [
 		{ xInd: 9, yInd: 3, color: colors[0] },
