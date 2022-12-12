@@ -126,3 +126,13 @@ function threeBalls() {
 		}
 	}
 }
+
+export {
+	threeBalls,
+	superBall,
+	killBall,
+	narrowMovableStick,
+	expandMovableStick,
+	speedDown,
+	speedUp,
+};

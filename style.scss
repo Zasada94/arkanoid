@@ -7,15 +7,14 @@
 body {
 	background-color: #31393c;
 	color: #d8d78f;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
+	// -webkit-user-select: none;
+	// -moz-user-select: none;
+	// -ms-user-select: none;
 	height: 100vh;
 	width: 100vw;
 }
 
-#gameContainer,
-#app {
+#gameContainer {
 	position: absolute;
 	height: 177.777vw;
 	width: 100vw;
@@ -31,13 +30,11 @@ body {
 }
 
 #canvas {
-	position: absolute;
-	background-color: white;
+	background-color: #6d9086;
 	display: block;
 	cursor: pointer;
 	width: 100%;
 	height: 100%;
-	z-index: 1;
 }
 
 /* for levelGenerator */
@@ -59,3 +56,4 @@ body {
 	float: left;
 	border-radius: 15px;
 } */
+

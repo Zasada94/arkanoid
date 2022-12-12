@@ -1,7 +1,241 @@
+// import {
+// 	drawCircle,
+// 	drawPng,
+// 	drawRectangle,
+// 	drawText,
+// 	drawStick,
+// 	getCos,
+// 	getSin,
+// } from "./src/drawingTools";
+
+import { colors, levels } from "./src/levels";
+import { sounds, playSound } from "./src/sound";
+
 // canvas
-canvas = document.getElementById("canvas");
-body = document.getElementById("body");
-context = canvas.getContext("2d");
+let app = document.getElementById("app");
+app.innerHTML = `
+<div id="gameContainer"
+></div><canvas id="canvas"></canvas>
+`;
+
+let canvas = document.getElementById("canvas");
+let body = document.getElementById("body");
+let context = canvas.getContext("2d");
+
+var drawCircle = function (x, y, radius, color) {
+	context.beginPath();
+	context.arc(x + radius, y + radius, radius, 0, 2 * Math.PI, false);
+	context.fillStyle = color;
+	context.fill();
+};
+
+var drawStick = function (x1, y1, x2, y2, width, color) {
+	context.beginPath();
+	context.moveTo(x1, y1);
+	context.lineTo(x2, y2);
+	context.lineWidth = width;
+	context.strokeStyle = color;
+	context.stroke();
+};
+
+var drawRectangle = function (x, y, width, height, color) {
+	context.beginPath();
+	context.moveTo(x, y + height / 2);
+	context.lineTo(x + width, y + height / 2);
+	context.lineWidth = height;
+	context.strokeStyle = color;
+	context.stroke();
+};
+
+var drawText = function (text, color, font, x, y) {
+	context.fillStyle = color;
+	context.font = font;
+	context.fillText(text, x, y);
+};
+
+var drawPng = function (path, x, y) {
+	let drawing = new Image();
+	drawing.src = path;
+	context.drawImage(drawing, x, y);
+	return drawing;
+};
+
+function getSin(degree) {
+	return parseFloat(Math.sin((Math.PI * degree) / 180).toFixed(3));
+}
+function getCos(degree) {
+	return parseFloat(Math.cos((Math.PI * degree) / 180).toFixed(3));
+}
+
+let colorOfBoxes = {
+	narrowMovableStick: "#a1636a",
+	expandMovableStick: "#e38c95",
+	speedUp: "#00ff00",
+	speedDown: "#008f00",
+	killBall: "#222",
+	superBall: "#ffd700",
+	threeBalls: "#c1cf94",
+};
+
+class Box {
+	constructor(x, y, func) {
+		this.func = func;
+		this.width = 10;
+		this.height = 10;
+		this.x1 = x;
+		this.y1 = y;
+		this.x2 = x + this.width;
+		this.y2 = y + this.height;
+		this.color = colorOfBoxes[func.name];
+		this.speed = 1;
+		this.indexInBoxList = boxList.length;
+		boxList[this.indexInBoxList] = this;
+	}
+	draw() {
+		drawRectangle(this.x1, this.y1, this.width, this.height, this.color);
+		this.fall();
+	}
+	fall() {
+		this.y1 += this.speed;
+		this.y2 = this.y1 + this.height; // must be updated for vertical control
+		if (this.y1 + this.height > height * 0.99) {
+			this.removeInBoxList();
+		} else if (this.y2 > 0.9 * height && this.y1 < 0.91 * height) {
+			// vertical control (3 is height of movableStick)
+			if (
+				(this.x2 > movableStick.x1 && this.x2 < movableStick.x2) ||
+				(this.x1 > movableStick.x1 && this.x1 < movableStick.x2)
+			) {
+				// horizontal control
+				this.func();
+				this.removeInBoxList();
+			}
+		}
+	}
+	removeInBoxList() {
+		boxList[this.indexInBoxList] = null;
+	}
+}
+
+function clearBoxList() {
+	boxList = [];
+}
+
+function speedOfBoxes(speed) {
+	for (var i = 0; i < boxList.length; i++) {
+		if (boxList[i]) {
+			boxList[i].speed = speed;
+		}
+	}
+}
+
+// all functions
+function narrowMovableStick() {
+	if (movableStick.width > 25) {
+		movableStick.width -= 10; // I didn't control this
+	}
+}
+
+function expandMovableStick() {
+	if (movableStick.width < 115) {
+		movableStick.width += 10; // I didn't control this
+	}
+}
+
+function speedUp() {
+	for (var i = 0; i < ballList.length; i++) {
+		if (ballList[i] && ballList[i].speed < 5 && !ballList[i].readyToGo) {
+			// max 5
+			ballList[i].speed += 1;
+			ballList[i].updateRoute();
+		}
+	}
+}
+
+function speedDown() {
+	for (var i = 0; i < ballList.length; i++) {
+		if (ballList[i] && ballList[i].speed > 1 && !ballList[i].readyToGo) {
+			// min 1
+			ballList[i].speed -= 1;
+			ballList[i].updateRoute();
+		}
+	}
+}
+
+function killBall() {
+	playSound("negative");
+	mainBall.reset();
+}
+
+function superBall(trueOrFalse = true) {
+	for (var i = 0; i < ballList.length; i++) {
+		if (ballList[i]) {
+			ballList[i].superBall = trueOrFalse;
+		}
+	}
+}
+
+function threeBalls() {
+	let len = ballList.length; // to prevent the infinite loop
+	for (var i = 0; i < len; i++) {
+		if (ballList[i] && ballList[i].speed) {
+			let leftBall = new Ball(
+				ballList[i].coordinate.x,
+				ballList[i].coordinate.y
+			);
+			leftBall.go(ballList[i].angle + 45, ballList[i].speed);
+			leftBall.readyToGo = false;
+
+			let rightBall = new Ball(
+				ballList[i].coordinate.x,
+				ballList[i].coordinate.y
+			);
+			rightBall.go(ballList[i].angle - 45, ballList[i].speed);
+			rightBall.readyToGo = false;
+		}
+	}
+}
+
+let ballList = []; // ball list in the canvas
+let stickList = [];
+let blockList = []; // block index list
+let boxList = [];
+
+let mapGrid = new Array(1000);
+for (var i = 0; i < mapGrid.length; i++) {
+	mapGrid[i] = new Array(1000);
+}
+
+function clearMapGrid() {
+	for (var i = 0; i < mapGrid.length; i++) {
+		for (var j = 0; j < mapGrid[i].length; j++) {
+			mapGrid[i][j] = null;
+		}
+	}
+}
+
+function clearBallList() {
+	//ballList = [ballList[0]]    // clear list of ball but the main ball is excluding
+	// ^ this code not stable for the game. I don't know how do it, maybe one day I will solve it
+
+	for (var i = 1; i < ballList.length; i++) {
+		ballList[i] = null;
+	}
+}
+
+function gameLoop() {
+	// clear
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	drawMain();
+	drawBar();
+
+	window.requestAnimationFrame(gameLoop);
+}
+
+window.onload = function () {
+	window.requestAnimationFrame(gameLoop);
+};
 
 let height;
 let width;
@@ -14,18 +248,62 @@ windowWidth = body.offsetWidth;
 windowHeight = body.offsetHeight;
 canvas.setAttribute("height", height);
 canvas.setAttribute("width", width);
+class Stick {
+	// cross stick is not now :(
+	constructor(x1, y1, x2, y2, color) {
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+		this.color = color;
+		this.angle = (Math.atan2(y2 - y1, x2 - x1) * 180.0) / Math.PI;
+		this.assets = [];
+		this.getAsset();
+	}
+	draw() {
+		drawStick(this.x1, this.y1, this.x2, this.y2, 3, this.color);
+	}
+	getAsset() {
+		stickList.push([this, this.angle]);
+	}
+}
 
-const CanvasResize = () => {
-	width = gameContainer.offsetWidth;
-	height = gameContainer.offsetHeight;
-	widthInt = parseInt(width);
-	windowWidth = body.offsetWidth;
-	windowHeight = body.offsetHeight;
-	canvas.setAttribute("height", height);
-	canvas.setAttribute("width", width);
-};
-CanvasResize();
-window.addEventListener("resize", CanvasResize);
+// default
+let topStick = new Stick(
+	0.01 * width,
+	0.01 * width,
+	0.99 * width,
+	0.01 * width,
+	"#638379"
+);
+let leftStick = new Stick(
+	0.01 * width,
+	0.01 * width,
+	0.01 * width,
+	0.99 * height,
+	"#638379"
+);
+let rightStick = new Stick(
+	0.99 * width,
+	0.01 * width,
+	0.99 * width,
+	0.99 * height,
+	"#638379"
+);
+
+let movableStick = new Stick(
+	width / 2 - width / 12,
+	0.9 * height,
+	width / 2 + width / 12,
+	0.9 * height,
+	"#e38c95"
+);
+
+// movableStick.x1 = width / 2 - width / 12;
+// movableStick.y1 = 0.9 * height;
+// movableStick.x2 = width / 2 + width / 12;
+// movableStick.y2 = 0.9 * height;
+movableStick.width = width / 6;
 
 let numberOfUnbrokenBlocks;
 let numberOfBall;
@@ -42,6 +320,7 @@ let y;
 let x;
 
 // ball
+
 class Ball {
 	constructor(startX, startY) {
 		this.coordinate = { x: startX, y: startY };
@@ -78,7 +357,7 @@ class Ball {
 		// this.blockIndex.x2 = parseInt((this.coordinate.x - 13 + 10) / 20);
 
 		// this.blockIndex.y2 = parseInt((this.coordinate.y - 13 + 10) / 11);
-
+		// console.log(mainBall.startX, mainBall.startY);
 		this.blockIndex.x1 = parseInt(
 			((this.coordinate.x + widthInt / 40) / widthInt) * 18
 		);
@@ -334,7 +613,8 @@ class Ball {
 		}
 	}
 	updatePositionOnMovableStick() {
-		this.coordinate.x = movableStick.x1 + (movableStick.width - 10) / 2;
+		this.coordinate.x =
+			movableStick.x1 + (movableStick.width - width * 0.02) / 2;
 		this.coordinate.y = movableStick.y1 - 11;
 	}
 
@@ -355,25 +635,45 @@ class Ball {
 	}
 }
 
-class Stick {
-	// cross stick is not now :(
-	constructor(x1, y1, x2, y2, color) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-		this.color = color;
-		this.angle = (Math.atan2(y2 - y1, x2 - x1) * 180.0) / Math.PI;
-		this.assets = [];
-		this.getAsset();
-	}
-	draw() {
-		drawStick(this.x1, this.y1, this.x2, this.y2, 3, this.color);
-	}
-	getAsset() {
-		stickList.push([this, this.angle]);
-	}
-}
+let mainBall = new Ball(
+	movableStick.x1 + (movableStick.width - 10) / 2,
+	movableStick.y1 - 0.02 * width
+);
+mainBall.isMain = true;
+
+const CanvasResize = () => {
+	width = gameContainer.offsetWidth;
+	height = gameContainer.offsetHeight;
+	widthInt = parseInt(width);
+	windowWidth = body.offsetWidth;
+	windowHeight = body.offsetHeight;
+	canvas.setAttribute("height", height);
+	canvas.setAttribute("width", width);
+	topStick.x1 = 0.01 * width;
+	topStick.y1 = 0.01 * width;
+	topStick.x2 = 0.99 * width;
+	topStick.y2 = 0.01 * width;
+	leftStick.x1 = 0.01 * width;
+	leftStick.y1 = 0.01 * width;
+	leftStick.x2 = 0.01 * width;
+	leftStick.y2 = 0.99 * height;
+	rightStick.x1 = 0.99 * width;
+	rightStick.y1 = 0.01 * width;
+	rightStick.x2 = 0.99 * width;
+	rightStick.y2 = 0.99 * height;
+	movableStick.x1 = width / 2 - width / 12;
+	movableStick.y1 = 0.9 * height;
+	movableStick.x2 = width / 2 + width / 12;
+	movableStick.y2 = 0.9 * height;
+	movableStick.width = width / 6;
+	mainBall.startX = movableStick.x1 + (movableStick.width - width * 0.02) / 2;
+	mainBall.startY = movableStick.y1 - width * 0.02;
+	mainBall.coordinate.x = mainBall.startX;
+	mainBall.coordinate.y = mainBall.startY;
+};
+
+CanvasResize();
+window.addEventListener("resize", CanvasResize);
 
 class Block {
 	constructor(xInd, yInd, color) {
@@ -414,8 +714,8 @@ class Block {
 		controlForLevelUp();
 		if (this.typeOfTheBox) {
 			new Box(
-				this.index.x * 20 + 18,
-				this.index.y * 11 + 15,
+				(this.index.x * widthInt) / 18 - widthInt / 80,
+				(this.index.y * widthInt) / 36,
 				this.typeOfTheBox
 			);
 		}
@@ -445,16 +745,16 @@ class Block {
 					break;
 				case 5:
 					// superBall is excellent so I want to be rare it :d
-					this.typeOfTheBox = killBall;
-					if (chanceforSuperBall == 0) {
-						this.typeOfTheBox = superBall;
-					}
+					// this.typeOfTheBox = killBall;
+					// if (chanceforSuperBall == 0) {
+					this.typeOfTheBox = superBall;
+					// }
 					break;
 				case 6:
-					this.typeOfTheBox = killBall;
-					if (yesOrNoForThreeBalls == 0) {
-						this.typeOfTheBox = threeBalls;
-					}
+					// this.typeOfTheBox = killBall;
+					// if (yesOrNoForThreeBalls == 0) {
+					this.typeOfTheBox = threeBalls;
+					// }
 					break;
 			}
 		}
@@ -530,39 +830,8 @@ function loadLevel(index) {
 function clearBlockList() {
 	blockList = [];
 }
-
-// default
-let topStick = new Stick(
-	0.01 * width,
-	0.01 * width,
-	0.99 * width,
-	0.01 * width,
-	"#638379"
-);
-let leftStick = new Stick(
-	0.01 * width,
-	0.01 * width,
-	0.01 * width,
-	0.99 * height,
-	"#638379"
-);
-let rightStick = new Stick(
-	0.99 * width,
-	0.01 * width,
-	0.99 * width,
-	0.99 * height,
-	"#638379"
-);
-
-let movableStick = new Stick(
-	width / 2 - width / 12,
-	0.9 * height,
-	width / 2 + width / 12,
-	0.9 * height,
-	"#e38c95"
-);
-movableStick.width = width / 6;
-
+// movableStick.x1 = width / 2 - width / 12;
+// movableStick.x2 = width / 2 + width / 12;
 function getCoor(e) {
 	if (!paused) {
 		x = e.clientX;
@@ -585,11 +854,38 @@ function getCoor(e) {
 	}
 }
 
-let mainBall = new Ball(
-	movableStick.x1 + (movableStick.width - 10) / 2,
-	movableStick.y1 - 11
-);
-mainBall.isMain = true;
+function addMobileHandlers() {
+	body.addEventListener("touchstart", handleTouchEvent);
+	body.addEventListener("touchmove", handleTouchEvent);
+	body.addEventListener("touchend", handleTouchEvent);
+	body.addEventListener("touchcancel", handleTouchEvent);
+}
+addMobileHandlers();
+let oldX;
+let newX;
+let diffX;
+let touch;
+function handleTouchEvent(e) {
+	if (e.touches.length === 0) return;
+	if (!paused) {
+		touch = e.touches[0];
+		x = touch.pageX;
+		let newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+		let newX2 = newX1 + movableStick.width;
+		movableStick.x1 = newX1;
+		movableStick.x2 = newX2;
+		if (newX1 < 10) {
+			movableStick.x1 = 10;
+			movableStick.x2 = movableStick.width + 10;
+		} else if (newX2 > canvas.width - 10) {
+			movableStick.x1 = canvas.width - 10 - movableStick.width;
+			movableStick.x2 = canvas.width - 10;
+		}
+		if (mainBall.readyToGo) {
+			mainBall.updatePositionOnMovableStick();
+		}
+	}
+}
 
 // draw
 let drawMain;
@@ -692,7 +988,7 @@ function drawPlayButton() {
 function toClick() {
 	if (drawBar == drawPlayButton && x > width * 0.5 && y > height * 0.5) {
 		play();
-	} else if (drawMain == drawGame && y < 550) {
+	} else if (drawMain == drawGame && y < height) {
 		start();
 	} else if (
 		drawBar == drawBoard &&
@@ -723,6 +1019,13 @@ function toClick() {
 		}
 	}
 }
+
+body.addEventListener("mousemove", (e) => {
+	getCoor(e);
+});
+canvas.addEventListener("click", () => {
+	toClick();
+});
 
 drawMain = drawWelcome;
 drawBar = drawPlayButton;

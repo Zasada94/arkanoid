@@ -9,3 +9,5 @@ let sounds = {
 function playSound(name) {
 	new Audio(sounds[name]).play();
 }
+
+export { sounds, playSound };

@@ -37,16 +37,16 @@ let colors = [
 	"#9f6b53",
 ];
 
-canvas = document.getElementById("canvas");
-body = document.getElementById("body");
-context = canvas.getContext("2d");
+// canvas = document.getElementById("canvas");
+// body = document.getElementById("body");
+// context = canvas.getContext("2d");
 
-width = gameContainer.offsetWidth;
-height = gameContainer.offsetHeight;
-windowWidth = body.offsetWidth;
-windowHeight = body.offsetHeight;
-canvas.setAttribute("height", height);
-canvas.setAttribute("width", width);
+// width = gameContainer.offsetWidth;
+// height = gameContainer.offsetHeight;
+// windowWidth = body.offsetWidth;
+// windowHeight = body.offsetHeight;
+// canvas.setAttribute("height", height);
+// canvas.setAttribute("width", width);
 
 let levels = {
 	1: [
@@ -148,36 +148,36 @@ let levels = {
 		{ xInd: 15, yInd: 12, color: "#cb7d8b" },
 	],
 	4: [
-		{ xInd: 0, yInd: 24, color: "#adddcf" },
-		{ xInd: 0, yInd: 25, color: "#e68b86" },
-		{ xInd: 0, yInd: 26, color: "#edbf74" },
-		{ xInd: 0, yInd: 27, color: "#5d97af" },
-		{ xInd: 0, yInd: 28, color: "#9898bc" },
+		{ xInd: 1, yInd: 24, color: "#adddcf" },
 		{ xInd: 1, yInd: 25, color: "#e68b86" },
 		{ xInd: 1, yInd: 26, color: "#edbf74" },
 		{ xInd: 1, yInd: 27, color: "#5d97af" },
 		{ xInd: 1, yInd: 28, color: "#9898bc" },
+		{ xInd: 2, yInd: 25, color: "#e68b86" },
 		{ xInd: 2, yInd: 26, color: "#edbf74" },
 		{ xInd: 2, yInd: 27, color: "#5d97af" },
 		{ xInd: 2, yInd: 28, color: "#9898bc" },
+		{ xInd: 3, yInd: 26, color: "#edbf74" },
 		{ xInd: 3, yInd: 27, color: "#5d97af" },
 		{ xInd: 3, yInd: 28, color: "#9898bc" },
+		{ xInd: 4, yInd: 27, color: "#5d97af" },
 		{ xInd: 4, yInd: 28, color: "#9898bc" },
+		{ xInd: 5, yInd: 28, color: "#9898bc" },
+		{ xInd: 13, yInd: 28, color: "#9898bc" },
+		{ xInd: 14, yInd: 27, color: "#5d97af" },
 		{ xInd: 14, yInd: 28, color: "#9898bc" },
+		{ xInd: 15, yInd: 26, color: "#edbf74" },
 		{ xInd: 15, yInd: 27, color: "#5d97af" },
 		{ xInd: 15, yInd: 28, color: "#9898bc" },
+		{ xInd: 16, yInd: 25, color: "#e68b86" },
 		{ xInd: 16, yInd: 26, color: "#edbf74" },
 		{ xInd: 16, yInd: 27, color: "#5d97af" },
 		{ xInd: 16, yInd: 28, color: "#9898bc" },
+		{ xInd: 17, yInd: 24, color: "#adddcf" },
 		{ xInd: 17, yInd: 25, color: "#e68b86" },
 		{ xInd: 17, yInd: 26, color: "#edbf74" },
 		{ xInd: 17, yInd: 27, color: "#5d97af" },
 		{ xInd: 17, yInd: 28, color: "#9898bc" },
-		{ xInd: 18, yInd: 24, color: "#adddcf" },
-		{ xInd: 18, yInd: 25, color: "#e68b86" },
-		{ xInd: 18, yInd: 26, color: "#edbf74" },
-		{ xInd: 18, yInd: 27, color: "#5d97af" },
-		{ xInd: 18, yInd: 28, color: "#9898bc" },
 	],
 	5: [
 		{ xInd: 3, yInd: 2, color: "#ffabb8" },
@@ -787,22 +787,6 @@ let levels = {
 		{ xInd: 17, yInd: 27, color: "#5d97af" },
 	],
 	10: [
-		{ xInd: 0, yInd: 11, color: "#94f2f4" },
-		{ xInd: 0, yInd: 12, color: "#f5deb2" },
-		{ xInd: 0, yInd: 13, color: "#f5deb2" },
-		{ xInd: 0, yInd: 14, color: "#f5deb2" },
-		{ xInd: 0, yInd: 15, color: "#f5deb2" },
-		{ xInd: 0, yInd: 16, color: "#f5deb2" },
-		{ xInd: 0, yInd: 17, color: "#f5deb2" },
-		{ xInd: 0, yInd: 18, color: "#f5deb2" },
-		{ xInd: 0, yInd: 19, color: "#f5deb2" },
-		{ xInd: 0, yInd: 20, color: "#f5deb2" },
-		{ xInd: 0, yInd: 21, color: "#f5deb2" },
-		{ xInd: 0, yInd: 22, color: "#f5deb2" },
-		{ xInd: 0, yInd: 23, color: "#f5deb2" },
-		{ xInd: 0, yInd: 24, color: "#f5deb2" },
-		{ xInd: 0, yInd: 25, color: "#f5deb2" },
-		{ xInd: 0, yInd: 26, color: "#f5deb2" },
 		{ xInd: 1, yInd: 10, color: "#94f2f4" },
 		{ xInd: 1, yInd: 11, color: "#94f2f4" },
 		{ xInd: 1, yInd: 12, color: "#f5deb2" },
@@ -991,43 +975,8 @@ let levels = {
 		{ xInd: 17, yInd: 24, color: "#f5deb2" },
 		{ xInd: 17, yInd: 25, color: "#f5deb2" },
 		{ xInd: 17, yInd: 26, color: "#f5deb2" },
-		{ xInd: 18, yInd: 11, color: "#94f2f4" },
-		{ xInd: 18, yInd: 12, color: "#f5deb2" },
-		{ xInd: 18, yInd: 13, color: "#f5deb2" },
-		{ xInd: 18, yInd: 14, color: "#f5deb2" },
-		{ xInd: 18, yInd: 15, color: "#f5deb2" },
-		{ xInd: 18, yInd: 16, color: "#f5deb2" },
-		{ xInd: 18, yInd: 17, color: "#f5deb2" },
-		{ xInd: 18, yInd: 18, color: "#f5deb2" },
-		{ xInd: 18, yInd: 19, color: "#f5deb2" },
-		{ xInd: 18, yInd: 20, color: "#f5deb2" },
-		{ xInd: 18, yInd: 21, color: "#f5deb2" },
-		{ xInd: 18, yInd: 22, color: "#f5deb2" },
-		{ xInd: 18, yInd: 23, color: "#f5deb2" },
-		{ xInd: 18, yInd: 24, color: "#f5deb2" },
-		{ xInd: 18, yInd: 25, color: "#f5deb2" },
-		{ xInd: 18, yInd: 26, color: "#f5deb2" },
 	],
 	11: [
-		{ xInd: 0, yInd: 10, color: "#f2a557" },
-		{ xInd: 0, yInd: 11, color: "#f2a557" },
-		{ xInd: 0, yInd: 12, color: "#f2a557" },
-		{ xInd: 0, yInd: 13, color: "#f2a557" },
-		{ xInd: 0, yInd: 14, color: "#f2a557" },
-		{ xInd: 0, yInd: 15, color: "#f2a557" },
-		{ xInd: 0, yInd: 16, color: "#f2a557" },
-		{ xInd: 0, yInd: 17, color: "#f2a557" },
-		{ xInd: 0, yInd: 18, color: "#f2a557" },
-		{ xInd: 0, yInd: 19, color: "#f2a557" },
-		{ xInd: 0, yInd: 20, color: "#f2a557" },
-		{ xInd: 0, yInd: 21, color: "#f2a557" },
-		{ xInd: 0, yInd: 22, color: "#f2a557" },
-		{ xInd: 0, yInd: 23, color: "#f2a557" },
-		{ xInd: 0, yInd: 24, color: "#f2a557" },
-		{ xInd: 0, yInd: 25, color: "#f2a557" },
-		{ xInd: 0, yInd: 26, color: "#f2a557" },
-		{ xInd: 0, yInd: 27, color: "#f2a557" },
-		{ xInd: 0, yInd: 28, color: "#f2a557" },
 		{ xInd: 1, yInd: 12, color: "#e7b74b" },
 		{ xInd: 1, yInd: 13, color: "#e7b74b" },
 		{ xInd: 1, yInd: 14, color: "#e7b74b" },
@@ -1333,25 +1282,6 @@ let levels = {
 		{ xInd: 17, yInd: 26, color: "#e7b74b" },
 		{ xInd: 17, yInd: 27, color: "#e7b74b" },
 		{ xInd: 17, yInd: 28, color: "#f2a557" },
-		{ xInd: 18, yInd: 10, color: "#f2a557" },
-		{ xInd: 18, yInd: 11, color: "#f2a557" },
-		{ xInd: 18, yInd: 12, color: "#f2a557" },
-		{ xInd: 18, yInd: 13, color: "#f2a557" },
-		{ xInd: 18, yInd: 14, color: "#f2a557" },
-		{ xInd: 18, yInd: 15, color: "#f2a557" },
-		{ xInd: 18, yInd: 16, color: "#f2a557" },
-		{ xInd: 18, yInd: 17, color: "#f2a557" },
-		{ xInd: 18, yInd: 18, color: "#f2a557" },
-		{ xInd: 18, yInd: 19, color: "#f2a557" },
-		{ xInd: 18, yInd: 20, color: "#f2a557" },
-		{ xInd: 18, yInd: 21, color: "#f2a557" },
-		{ xInd: 18, yInd: 22, color: "#f2a557" },
-		{ xInd: 18, yInd: 23, color: "#f2a557" },
-		{ xInd: 18, yInd: 24, color: "#f2a557" },
-		{ xInd: 18, yInd: 25, color: "#f2a557" },
-		{ xInd: 18, yInd: 26, color: "#f2a557" },
-		{ xInd: 18, yInd: 27, color: "#f2a557" },
-		{ xInd: 18, yInd: 28, color: "#f2a557" },
 	],
 	12: [
 		{ xInd: 4, yInd: 4, color: "#e8cfc8" },
@@ -1543,3 +1473,5 @@ let levels = {
 		{ xInd: 14, yInd: 16, color: "#e8cfc8" },
 	],
 };
+
+export { colors, levels };
