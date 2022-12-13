@@ -246,22 +246,37 @@ width = gameContainer.offsetWidth;
 height = gameContainer.offsetHeight;
 windowWidth = body.offsetWidth;
 windowHeight = body.offsetHeight;
+let ballWidth = 0.02 * width;
+let paddleHeight = 0.036 * width;
+let blockWidth = width / 9;
+let blockHeight = (width / 9) * 0.62;
 canvas.setAttribute("height", height);
 canvas.setAttribute("width", width);
+
+const playerImg = new Image();
+playerImg.src = "./public/img/slajder.png";
+const block1Img = new Image();
+block1Img.src = "./public/img/klocek_1.png";
+const block2Img = new Image();
+block2Img.src = "./public/img/klocek_2.png";
+const block3Img = new Image();
+block3Img.src = "./public/img/klocek_3.png";
+
 class Stick {
 	// cross stick is not now :(
-	constructor(x1, y1, x2, y2, color) {
+	constructor(x1, y1, x2, y2, stickWidth, color) {
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
+		this.stickWidth = stickWidth;
 		this.color = color;
 		this.angle = (Math.atan2(y2 - y1, x2 - x1) * 180.0) / Math.PI;
 		this.assets = [];
 		this.getAsset();
 	}
 	draw() {
-		drawStick(this.x1, this.y1, this.x2, this.y2, 3, this.color);
+		drawStick(this.x1, this.y1, this.x2, this.y2, this.stickWidth, this.color);
 	}
 	getAsset() {
 		stickList.push([this, this.angle]);
@@ -274,6 +289,7 @@ let topStick = new Stick(
 	0.01 * width,
 	0.99 * width,
 	0.01 * width,
+	0.005 * width,
 	"#638379"
 );
 let leftStick = new Stick(
@@ -281,6 +297,7 @@ let leftStick = new Stick(
 	0.01 * width,
 	0.01 * width,
 	0.99 * height,
+	0.005 * width,
 	"#638379"
 );
 let rightStick = new Stick(
@@ -288,6 +305,7 @@ let rightStick = new Stick(
 	0.01 * width,
 	0.99 * width,
 	0.99 * height,
+	0.005 * width,
 	"#638379"
 );
 
@@ -296,7 +314,8 @@ let movableStick = new Stick(
 	0.9 * height,
 	width / 2 + width / 12,
 	0.9 * height,
-	"#e38c95"
+	0.03 * width,
+	"#ddd"
 );
 
 // movableStick.x1 = width / 2 - width / 12;
@@ -329,7 +348,6 @@ class Ball {
 		this.blockIndex = { x1: 0, y1: 0, x2: 0, y2: 0 };
 		// x1, y1, x2, y2 are not point, index
 		this.speed = 0; // per frame
-		this.ballWidth = 0.02 * width;
 		this.color = "#c1cf94";
 		this.addList();
 		this.brokenBlock = new Array(); // this list for will be broken block
@@ -349,6 +367,13 @@ class Ball {
 
 	removeList() {}
 	draw() {
+		let PlayerImage = context.drawImage(
+			playerImg,
+			movableStick.x1,
+			0.89 * height,
+			width / 6,
+			paddleHeight
+		);
 		// to catch current block index
 		// this.blockIndex.x1 = parseInt((this.coordinate.x - 13) / 20);
 
@@ -359,7 +384,7 @@ class Ball {
 		// this.blockIndex.y2 = parseInt((this.coordinate.y - 13 + 10) / 11);
 		// console.log(mainBall.startX, mainBall.startY);
 		this.blockIndex.x1 = parseInt(
-			((this.coordinate.x + widthInt / 40) / widthInt) * 18
+			((this.coordinate.x) 
 		);
 		this.blockIndex.y1 = parseInt((this.coordinate.y / widthInt) * 36);
 		this.blockIndex.x2 = parseInt(
@@ -670,6 +695,10 @@ const CanvasResize = () => {
 	mainBall.startY = movableStick.y1 - width * 0.02;
 	mainBall.coordinate.x = mainBall.startX;
 	mainBall.coordinate.y = mainBall.startY;
+	ballWidth = 0.02 * width;
+	paddleHeight = 0.036 * width;
+	blockWidth = width / 9;
+	blockHeight = (width / 9) * 0.62;
 };
 
 CanvasResize();
@@ -687,13 +716,20 @@ class Block {
 		this.tryYourChance();
 	}
 	draw() {
-		drawRectangle(
-			(this.index.x * widthInt) / 18 - widthInt / 40,
-			(this.index.y * widthInt) / 36,
-			widthInt / 20,
-			widthInt / 40,
-			this.color
+		context.drawImage(
+			block1Img,
+			(this.index.x * width) / 18,
+			(this.index.y * height) / 26,
+			blockWidth,
+			blockHeight
 		);
+		// drawRectangle(
+		// 	(this.index.x * widthInt) / 18 - widthInt / 40,
+		// 	(this.index.y * widthInt) / 36,
+		// 	widthInt / 20,
+		// 	widthInt / 40,
+		// 	this.color
+		// );
 	}
 
 	// drawRectangle(
@@ -806,7 +842,7 @@ function play() {
 	numberOfBall = 2;
 	level = 1;
 	score = 0;
-	loadLevel(1);
+	loadLevel(0);
 	drawMain = drawGame;
 	drawBar = drawBoard;
 }

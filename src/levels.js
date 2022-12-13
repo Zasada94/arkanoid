@@ -49,6 +49,24 @@ let colors = [
 // canvas.setAttribute("width", width);
 
 let levels = {
+	0: [
+		{ xInd: 1, yInd: 1, color: colors[0] },
+		{ xInd: 3, yInd: 1, color: colors[1] },
+		{ xInd: 5, yInd: 1, color: colors[2] },
+		{ xInd: 7, yInd: 1, color: colors[0] },
+		{ xInd: 9, yInd: 1, color: colors[1] },
+		{ xInd: 11, yInd: 1, color: colors[2] },
+		{ xInd: 13, yInd: 1, color: colors[0] },
+		{ xInd: 15, yInd: 1, color: colors[1] },
+		{ xInd: 1, yInd: 2, color: colors[0] },
+		{ xInd: 3, yInd: 2, color: colors[1] },
+		{ xInd: 5, yInd: 2, color: colors[2] },
+		{ xInd: 7, yInd: 2, color: colors[0] },
+		{ xInd: 9, yInd: 2, color: colors[1] },
+		{ xInd: 11, yInd: 2, color: colors[2] },
+		{ xInd: 13, yInd: 2, color: colors[0] },
+		{ xInd: 15, yInd: 2, color: colors[1] },
+	],
 	1: [
 		{ xInd: 9, yInd: 3, color: colors[0] },
 		{ xInd: 9, yInd: 4, color: colors[1] },
