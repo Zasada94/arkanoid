@@ -246,21 +246,19 @@ width = gameContainer.offsetWidth;
 height = gameContainer.offsetHeight;
 windowWidth = body.offsetWidth;
 windowHeight = body.offsetHeight;
-let ballWidth = 0.02 * width;
+let ballWidth = width / 20;
 let paddleHeight = 0.036 * width;
-let blockWidth = width / 9;
-let blockHeight = (width / 9) * 0.62;
+let paddleWidth = 0.02 * width;
+let blockWidth = width / 10;
+let blockHeight = (width / 10) * 0.62;
 canvas.setAttribute("height", height);
 canvas.setAttribute("width", width);
 
 const playerImg = new Image();
 playerImg.src = "./public/img/slajder.png";
-const block1Img = new Image();
-block1Img.src = "./public/img/klocek_1.png";
-const block2Img = new Image();
-block2Img.src = "./public/img/klocek_2.png";
-const block3Img = new Image();
-block3Img.src = "./public/img/klocek_3.png";
+
+const ballImg = new Image();
+ballImg.src = "./public/img/pilka_01.png";
 
 class Stick {
 	// cross stick is not now :(
@@ -290,7 +288,7 @@ let topStick = new Stick(
 	0.99 * width,
 	0.01 * width,
 	0.005 * width,
-	"#638379"
+	"#000"
 );
 let leftStick = new Stick(
 	0.01 * width,
@@ -298,7 +296,7 @@ let leftStick = new Stick(
 	0.01 * width,
 	0.99 * height,
 	0.005 * width,
-	"#638379"
+	"#000"
 );
 let rightStick = new Stick(
 	0.99 * width,
@@ -306,7 +304,7 @@ let rightStick = new Stick(
 	0.99 * width,
 	0.99 * height,
 	0.005 * width,
-	"#638379"
+	"#000"
 );
 
 let movableStick = new Stick(
@@ -348,7 +346,7 @@ class Ball {
 		this.blockIndex = { x1: 0, y1: 0, x2: 0, y2: 0 };
 		// x1, y1, x2, y2 are not point, index
 		this.speed = 0; // per frame
-		this.color = "#c1cf94";
+		this.color = "transparent";
 		this.addList();
 		this.brokenBlock = new Array(); // this list for will be broken block
 		this.readyToGo = true;
@@ -374,6 +372,14 @@ class Ball {
 			width / 6,
 			paddleHeight
 		);
+
+		let ballImage = context.drawImage(
+			ballImg,
+			this.coordinate.x,
+			this.coordinate.y,
+			ballWidth,
+			ballWidth
+		);
 		// to catch current block index
 		// this.blockIndex.x1 = parseInt((this.coordinate.x - 13) / 20);
 
@@ -383,28 +389,27 @@ class Ball {
 
 		// this.blockIndex.y2 = parseInt((this.coordinate.y - 13 + 10) / 11);
 		// console.log(mainBall.startX, mainBall.startY);
-		this.blockIndex.x1 = parseInt(
-			((this.coordinate.x) 
-		);
-		this.blockIndex.y1 = parseInt((this.coordinate.y / widthInt) * 36);
+
+		this.blockIndex.x1 = parseInt((this.coordinate.x * 10) / width);
 		this.blockIndex.x2 = parseInt(
-			((this.coordinate.x + widthInt * 0.02 + widthInt / 40) / widthInt) * 18
+			((this.coordinate.x + ballWidth) * 10) / width
 		);
+		this.blockIndex.y1 = parseInt((this.coordinate.y / height) * 30);
 		this.blockIndex.y2 = parseInt(
-			((this.coordinate.y + widthInt * 0.02) / widthInt) * 36
+			((this.coordinate.y + ballWidth) / height) * 30
 		);
 		// console.log(
 		// 	"x1",
 		// 	this.blockIndex.x1,
-		// 	"y1",
-		// 	this.blockIndex.y1,
-		// 	"x2",
-		// 	this.blockIndex.x2,
-		// 	"y2",
-		// 	this.blockIndex.x1
+		// "y1",
+		// this.blockIndex.y1,
+		// "x2",
+		// this.blockIndex.x2
+		// "y2",
+		// this.blockIndex.y2
 		// );
+		// console.log("x", this.coordinate.x, "y", this.coordinate.y);
 		// the diameter of the ball is 0.02 width
-
 		// drawRectangle(
 		//   13 + this.index.x * 20,
 		//   13 + this.index.y * 11,
@@ -412,15 +417,12 @@ class Ball {
 		//   10,
 		//   this.color
 		// );
-		// drawRectangle(
-		// 	this.index.x * parseInt(width / 18)-width/40,
-		// 	this.index.y * parseInt(width / 36),
-		// 	width / 20,
-		// 	width / 40,
-		// 	this.color
-		// );
+		// (this.index.x * width) / 10,
+		// (this.index.y * height) / 30,
+		// blockWidth,
+		// blockHeight
 
-		drawCircle(this.coordinate.x, this.coordinate.y, 0.01 * width, this.color);
+		drawCircle(this.coordinate.x, this.coordinate.y, ballWidth / 2, this.color);
 		this.coordinate.x += this.route.x;
 		this.coordinate.y += this.route.y;
 		if (this.coordinate.x > 0.97 * width && this.route.x > 0) {
@@ -695,17 +697,19 @@ const CanvasResize = () => {
 	mainBall.startY = movableStick.y1 - width * 0.02;
 	mainBall.coordinate.x = mainBall.startX;
 	mainBall.coordinate.y = mainBall.startY;
-	ballWidth = 0.02 * width;
+	ballWidth = width / 20;
 	paddleHeight = 0.036 * width;
-	blockWidth = width / 9;
-	blockHeight = (width / 9) * 0.62;
+	paddleWidth = 0.02 * width;
+	blockWidth = width / 10;
+	blockHeight = (width / 10) * 0.62;
+	widthInt = parseInt(width);
 };
 
 CanvasResize();
 window.addEventListener("resize", CanvasResize);
 
 class Block {
-	constructor(xInd, yInd, color) {
+	constructor(xInd, yInd, color, img) {
 		this.indexInBlockList = blockList.length;
 		blockList.push(this);
 		this.index = { x: xInd, y: yInd };
@@ -714,12 +718,14 @@ class Block {
 		mapGrid[xInd][yInd] = this;
 		numberOfUnbrokenBlocks++;
 		this.tryYourChance();
+		this.blockImg = new Image();
+		this.blockImg.src = img;
 	}
 	draw() {
 		context.drawImage(
-			block1Img,
-			(this.index.x * width) / 18,
-			(this.index.y * height) / 26,
+			this.blockImg,
+			(this.index.x * width) / 10,
+			(this.index.y * height) / 30,
 			blockWidth,
 			blockHeight
 		);
@@ -858,7 +864,8 @@ function loadLevel(index) {
 		new Block(
 			levels[index][i].xInd,
 			levels[index][i].yInd,
-			levels[index][i].color
+			levels[index][i].color,
+			levels[index][i].img
 		);
 	}
 }
