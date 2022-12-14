@@ -49,7 +49,7 @@ let colors = [
 // canvas.setAttribute("width", width);
 
 let levels = {
-	0: [
+	1: [
 		{ xInd: 1, yInd: 2, img: "./public/img/klocek_3.png" },
 		{ xInd: 2, yInd: 2, img: "./public/img/klocek_3.png" },
 		{ xInd: 3, yInd: 2, img: "./public/img/klocek_3.png" },
@@ -101,21 +101,33 @@ let levels = {
 		{ xInd: 7, yInd: 9, img: "./public/img/klocek_1.png" },
 		{ xInd: 8, yInd: 9, img: "./public/img/klocek_1.png" },
 	],
-	1: [
-		{ xInd: 9, yInd: 3, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 4, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 5, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 6, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 7, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 8, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 9, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 10, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 11, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 12, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 13, img: "./public/img/klocek_1.png" },
-		{ xInd: 9, yInd: 14, img: "./public/img/klocek_1.png" },
-	],
 	2: [
+		{ xInd: 4, yInd: 3, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 4, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 5, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 6, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 7, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 8, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 9, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 10, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 11, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 12, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 13, img: "./public/img/klocek_1.png" },
+		{ xInd: 4, yInd: 14, img: "./public/img/klocek_1.png" },
+		{ xInd: 5, yInd: 3, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 4, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 5, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 6, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 7, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 8, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 9, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 10, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 11, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 12, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 13, img: "./public/img/klocek_2.png" },
+		{ xInd: 5, yInd: 14, img: "./public/img/klocek_2.png" },
+	],
+	3: [
 		{ xInd: 6, yInd: 4, color: "#9daadf" },
 		{ xInd: 6, yInd: 6, color: "#9daadf" },
 		{ xInd: 6, yInd: 10, color: "#9daadf" },
@@ -145,7 +157,7 @@ let levels = {
 		{ xInd: 12, yInd: 10, color: "#9daadf" },
 		{ xInd: 12, yInd: 12, color: "#9daadf" },
 	],
-	3: [
+	4: [
 		{ xInd: 3, yInd: 6, color: "#9daadf" },
 		{ xInd: 3, yInd: 8, color: "#cb7d8b" },
 		{ xInd: 3, yInd: 10, color: "#9daadf" },
