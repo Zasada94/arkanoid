@@ -1121,7 +1121,7 @@ function game() {
 		levelsSpan.innerText = `LVL: ${level}/3`;
 
 		// pause
-		if (!paused) {
+		if (paused) {
 			// drawPng("img/play.png", width * 0.9, height * 0.95);
 			// drawText(
 			// 	"Paused",
