@@ -10,35 +10,39 @@
 
 import { colors, levels } from "./src/levels";
 import { sounds, playSound } from "./src/sound";
+import "./gamePage.css";
+import { scorePage } from "./src/scorePage.js";
 
-function game() {
+export function gamePage() {
 	// canvas
 	let app = document.getElementById("app");
 	app.innerHTML = `
 <div id="gameContainer">
 	<div id="scoreContainer">
-		
 		<span id="scoreSpan">Score: 0</span>
+
 			<div id="livesContainer">
-				<img id="livesIcon" src="./public/img/pilka_01.png">
+				<img id="livesIcon" src="./public/img/02/pilka_01.png">
 				<span id="livesSpan">x3</span>
 			</div>
 		<span id="levelsSpan">LVL: 1/3</span>
 		<button id="pauseButton">
-			<img id="pauseButtonImg" src="./public/img/play.png">
+			<img id="pauseButtonImg" src="./public/img/02/play.png">
 		</button>
 	</div>
-	<img id="scoreBackground" src="./public/img/tlo_pod_punkty.png">
+	<img id="scoreBackground" src="./public/img/02/tlo_pod_punkty.png">
 <canvas id="canvas"></canvas>
 </div>
 `;
 
 	let canvas = document.getElementById("canvas");
 	let body = document.getElementById("body");
+	let gameContainer = document.getElementById("gameContainer");
 	let scoreSpan = document.getElementById("scoreSpan");
 	let livesSpan = document.getElementById("livesSpan");
 	let levelsSpan = document.getElementById("levelsSpan");
 	let pauseButton = document.getElementById("pauseButton");
+	let scoreContainer = document.getElementById("scoreContainer");
 	let context = canvas.getContext("2d");
 
 	var drawCircle = function (x, y, radius, color) {
@@ -101,19 +105,19 @@ function game() {
 			this.func = func;
 			this.width = width / 25;
 			this.height = width / 25;
-			this.img = "./public/img/power_up.png";
+			this.img = "./public/img/02/power_up.png";
 			this.x1 = x;
 			this.y1 = y;
 			this.x2 = x + this.width;
 			this.y2 = y + this.height;
 			this.color = colorOfBoxes[func.name];
-			this.speed = 1;
+			this.speed = 3;
 			this.indexInBoxList = boxList.length;
 			boxList[this.indexInBoxList] = this;
 		}
 		draw() {
 			const powerUpImg = new Image();
-			powerUpImg.src = "./public/img/power_up.png";
+			powerUpImg.src = "./public/img/02/power_up.png";
 			context.drawImage(powerUpImg, this.x1, this.y1, this.width, this.height);
 			this.fall();
 		}
@@ -185,7 +189,7 @@ function game() {
 	// }
 
 	// function killBall() {
-	// 	playSound("negative");
+	// playSound("negative");
 	// 	mainBall.reset();
 	// }
 
@@ -198,13 +202,13 @@ function game() {
 	// }
 
 	const playerImg = new Image();
-	playerImg.src = "./public/img/slajder.png";
+	playerImg.src = "./public/img/02/slajder.png";
 	const ballImg = new Image();
-	ballImg.src = "./public/img/pilka_01.png";
+	ballImg.src = "./public/img/02/pilka_01.png";
 	const leftBallImg = new Image();
-	leftBallImg.src = "./public/img/pilka_02.png";
+	leftBallImg.src = "./public/img/02/pilka_02.png";
 	const rightBallImg = new Image();
-	rightBallImg.src = "./public/img/pilka_03.png";
+	rightBallImg.src = "./public/img/02/pilka_03.png";
 
 	function threeBalls() {
 		let len = ballList.length; // to prevent the infinite loop
@@ -390,7 +394,7 @@ function game() {
 
 	let numberOfUnbrokenBlocks;
 	let numberOfBall;
-	let speedOfBall = 3;
+	let speedOfBall = 7;
 	let level;
 	let score;
 	let multipleBlock = 0;
@@ -512,12 +516,6 @@ function game() {
 			// blockWidth,
 			// blockHeight
 
-			drawCircle(
-				this.coordinate.x,
-				this.coordinate.y,
-				ballWidth / 2,
-				this.color
-			);
 			this.coordinate.x += this.route.x;
 			this.coordinate.y += this.route.y;
 			if (
@@ -534,9 +532,9 @@ function game() {
 				this.setAngle(360 - this.angle);
 				playSound("click");
 			} else if (
-				this.coordinate.y + ballWidth * 1.3 > height * 0.9 &&
-				this.coordinate.y + ballWidth * 1.3 < height * 0.91 &&
-				this.coordinate.x + ballWidth * 1.3 > movableStick.x1 &&
+				this.coordinate.y + ballWidth * 1 > height * 0.9 &&
+				this.coordinate.y + ballWidth * 1 < height * 0.91 &&
+				this.coordinate.x + ballWidth * 1 > movableStick.x1 &&
 				this.coordinate.x < movableStick.x2
 			) {
 				let newDegree = Math.abs(
@@ -553,8 +551,8 @@ function game() {
 				playSound("click");
 			} else if (this.coordinate.y > height * 0.9) {
 				this.route.x = this.route.y = this.speed = 0;
-				this.coordinate.x = -10;
-				this.coordinate.y = -10;
+				this.coordinate.x = -30;
+				this.coordinate.y = -30;
 				numberOfLiveBall--;
 				if (numberOfLiveBall == 0) {
 					playSound("negative");
@@ -802,13 +800,18 @@ function game() {
 		blockWidth = width / 10;
 		blockHeight = blockWidth * 0.62;
 		widthInt = parseInt(width);
+		if (width >= windowWidth) {
+			scoreContainer.classList.add("active");
+		} else {
+			scoreContainer.classList.remove("active");
+		}
 	};
 
 	CanvasResize();
 	window.addEventListener("resize", CanvasResize);
 
 	class Block {
-		constructor(xInd, yInd, color, img) {
+		constructor(xInd, yInd, color, img, img2, img3) {
 			this.indexInBlockList = blockList.length;
 			blockList.push(this);
 			this.index = { x: xInd, y: yInd };
@@ -819,6 +822,10 @@ function game() {
 			this.tryYourChance();
 			this.blockImg = new Image();
 			this.blockImg.src = img;
+			this.blockImg2 = new Image();
+			this.blockImg2.src = img2;
+			this.blockImg3 = new Image();
+			this.blockImg3.src = img3;
 		}
 		draw() {
 			context.drawImage(
@@ -846,9 +853,26 @@ function game() {
 		// );
 
 		explode() {
-			playSound("blockCrush");
-			blockList[this.indexInBlockList] = null;
 			mapGrid[this.index.x][this.index.y] = null;
+
+			// context.clearRect(0, 0, width, height);
+			// context.drawImage(
+			// 	this.blockImg2,
+			// 	(this.index.x * width) / 10,
+			// 	(this.index.y * height) / 30,
+			// 	blockWidth,
+			// 	blockHeight
+			// );
+			blockList[this.indexInBlockList].blockImg = this.blockImg2;
+
+			setTimeout(() => {
+				blockList[this.indexInBlockList].blockImg = this.blockImg3;
+			}, 30);
+			setTimeout(() => {
+				blockList[this.indexInBlockList] = null;
+			}, 60);
+			// console.log(blockList);
+			playSound("blockCrush");
 			numberOfUnbrokenBlocks--;
 			score += 10;
 			multipleBlock++;
@@ -913,10 +937,9 @@ function game() {
 
 	function controlForGameOver() {
 		if (numberOfBall < 0) {
-			drawMain = drawGameOver;
-			drawBar = drawPlayButton;
 			clearBoxList();
 			playSound("gameOver");
+			scorePage(score);
 		}
 	}
 
@@ -936,19 +959,20 @@ function game() {
 		level++;
 		numberOfBall++;
 		mainBall.reset();
-		if (levels[level]) {
-			loadLevel(level);
+		if (level != 4) {
+			setTimeout(() => {
+				loadLevel(level);
+			}, 100);
 		} else {
-			drawMain = drawTheEnd;
-			drawBar = drawPlayButton;
+			scorePage(score);
 		}
 	}
 
-	function play() {
+	function gamePlay() {
 		numberOfBall = 2;
 		level = 1;
 		score = 0;
-		loadLevel(1);
+		loadLevel(level);
 		drawMain = drawGame;
 		drawBar = drawBoard;
 	}
@@ -965,7 +989,9 @@ function game() {
 				levels[index][i].xInd,
 				levels[index][i].yInd,
 				levels[index][i].color,
-				levels[index][i].img
+				levels[index][i].img,
+				levels[index][i].img2,
+				levels[index][i].img3
 			);
 		}
 	}
@@ -1061,15 +1087,7 @@ function game() {
 		}
 	}
 
-	function drawWelcome() {
-		drawText(
-			"Arkanoid",
-			"#d9effc",
-			"50px Saira Stencil One",
-			width / 4,
-			height / 4
-		);
-	}
+	function drawWelcome() {}
 
 	function drawGameOver() {
 		drawText("Game Over", "#f46f47", "32px Noto Sans", width / 4, height / 4);
@@ -1122,28 +1140,16 @@ function game() {
 
 		// pause
 		if (paused) {
-			// drawPng("img/play.png", width * 0.9, height * 0.95);
-			// drawText(
-			// 	"Paused",
-			// 	"#e38c95",
-			// 	"50px Noto Sans",
-			// 	0.4 * width,
-			// 	0.4 * height
-			// );
-			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/play.png">`;
+			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
 		} else {
-			// drawPng("img/pause.png", width * 0.9, height * 0.95);
-			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/pause.png">`;
+			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
 		}
 	}
 
-	function drawPlayButton() {
-		drawText("Play", "#ddd", "25px Noto Sans", width * 0.6, height * 0.6);
-	}
+	function drawPlayButton() {}
 	function toClick() {
-		if (drawBar == drawPlayButton && x > width * 0.5 && y > height * 0.5) {
-			play();
-		} else if (drawMain == drawGame && y < height) {
+		if (drawMain == drawGame && y < height) {
+			paused = false;
 			start();
 		} else if (
 			drawBar == drawBoard &&
@@ -1156,11 +1162,10 @@ function game() {
 	body.addEventListener("mousemove", (e) => {
 		getCoor(e);
 	});
-	canvas.addEventListener("click", () => {
-		toClick();
-	});
+
 	pauseButton.addEventListener("click", () => {
 		if (!paused) {
+			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
 			for (var i = 0; i < ballList.length; i++) {
 				if (ballList[i]) {
 					ballList[i].buffer.x = ballList[i].route.x;
@@ -1172,6 +1177,7 @@ function game() {
 			speedOfBoxes(0);
 			paused = true;
 		} else {
+			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
 			for (var i = 0; i < ballList.length; i++) {
 				if (ballList[i]) {
 					ballList[i].route.x = ballList[i].buffer.x;
@@ -1182,7 +1188,7 @@ function game() {
 			speedOfBoxes(1);
 			paused = false;
 		}
-		console.log(paused);
+		// console.log(paused);
 	});
 
 	drawMain = drawWelcome;
@@ -1190,5 +1196,9 @@ function game() {
 
 	// for animate
 	window.requestAnimationFrame(gameLoop);
+	canvas.addEventListener("click", () => {
+		toClick();
+	});
+	gamePlay();
 }
-game();
+gamePage();

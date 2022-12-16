@@ -4,17 +4,23 @@
 	overflow: hidden;
 }
 
+@font-face {
+	font-family: sora;
+	src: url("./public/fonts/sora.ttf");
+}
+
 body {
 	background-color: #31393c;
-	color: #d8d78f;
-	// -webkit-user-select: none;
-	// -moz-user-select: none;
-	// -ms-user-select: none;
+	color: black;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	height: 100vh;
 	width: 100vw;
 }
 
-#gameContainer {
+#gameContainer,
+#app {
 	position: absolute;
 	height: 177.777vw;
 	width: 100vw;
@@ -30,11 +36,67 @@ body {
 }
 
 #canvas {
-	background-color: #6d9086;
+	position: absolute;
+	background-color: white;
 	display: block;
 	cursor: pointer;
 	width: 100%;
 	height: 100%;
+	z-index: 1;
+}
+
+#scoreContainer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 7.5%;
+	z-index: 3;
+	display: flex;
+	justify-content: space-around;
+	font-family: sora;
+	font-size: 2.5vh;
+	align-items: center;
+}
+
+#scoreBackground {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 7.5%;
+	z-index: 2;
+}
+
+#scoreContainer span {
+	display: inline-block;
+}
+
+#pauseButton {
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+	width: 8%;
+	padding-top: 1%;
+	z-index: 5;
+}
+
+#pauseButton > img {
+	width: 100%;
+}
+
+#scoreSpan {
+	flex-basis: 30%;
+}
+
+#livesContainer {
+	flex-basis: 15%;
+	display: flex;
+	height: 42%;
+}
+#livesIcon {
+	height: 100%;
+	padding-right: 10%;
 }
 
 /* for levelGenerator */
@@ -56,4 +118,3 @@ body {
 	float: left;
 	border-radius: 15px;
 } */
-

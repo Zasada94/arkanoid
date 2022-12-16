@@ -1,0 +1,100 @@
+@font-face {
+	font-family: sora-bold;
+	src: url("./public/fonts/sora-bold.ttf");
+}
+
+#scoreWrapper {
+	position: absolute;
+	height: 177.777vw;
+	width: 100vw;
+	max-height: 100vh;
+	max-width: 56.25vh;
+	background-image: url(../public/img/03/bg_03.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	left: 50%;
+	transform: translate(-50%, 0);
+	overflow: hidden;
+}
+
+#nick {
+	/* background-color: red; */
+	position: absolute;
+	display: inline-block;
+	overflow: hidden;
+	left: 14.5%;
+	top: 64.5%;
+	width: 61%;
+	height: 5.3%;
+	text-align: center;
+	padding: 2.5% 0 0% 10%;
+	cursor: pointer;
+	border: none;
+	background: transparent;
+	outline: none;
+	text-align: left;
+	color: #013f77;
+	font-size: 2.5vh;
+	border-radius: 10px;
+	font-family: sora, sans-serif;
+}
+
+#nick.active {
+	font-size: 4.44vw;
+}
+
+#nick.invalid {
+	background-color: #ffdddd;
+}
+
+#rankButton {
+	position: absolute;
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+	width: 56%;
+	bottom: 16%;
+	left: 22%;
+}
+
+#rankButton > img {
+	width: 100%;
+}
+
+#playButton {
+	position: absolute;
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+	width: 56%;
+	bottom: 2%;
+	left: 22%;
+}
+
+#playButton > img {
+	width: 100%;
+}
+
+#scoreDiv {
+	/* display: inline-block;
+     */
+	font-family: sora-bold;
+	font-size: 7vh;
+	position: absolute;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#scoreDiv.active {
+	font-size: 12.44vw;
+}
+
+#nick::placeholder {
+	padding: 2% 0 0 23%;
+}
+
+textarea:focus::placeholder {
+	color: transparent;
+}
