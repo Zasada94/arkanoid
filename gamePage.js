@@ -383,7 +383,7 @@ export function gamePage() {
 		width / 2 + width / 10,
 		0.9 * height,
 		0.034 * width,
-		"transparent"
+		"rgba(0,0,0,0)"
 	);
 
 	// movableStick.x1 = width / 2 - paddleWidth / 2;
@@ -416,7 +416,7 @@ export function gamePage() {
 			this.blockIndex = { x1: 0, y1: 0, x2: 0, y2: 0 };
 			// x1, y1, x2, y2 are not point, index
 			this.speed = 0; // per frame
-			this.color = "transparent";
+			this.color = "rgba(0,0,0,0)";
 			this.addList();
 			this.brokenBlock = new Array(); // this list for will be broken block
 			this.readyToGo = true;
@@ -1002,6 +1002,7 @@ export function gamePage() {
 	// movableStick.x1 = width / 2 - width / 12;
 	// movableStick.x2 = width / 2 + width / 12;
 	function getCoor(e) {
+		console.log("desktop handler added");
 		if (!paused) {
 			x = e.clientX;
 			y = e.clientY;
@@ -1031,18 +1032,20 @@ export function gamePage() {
 		body.addEventListener("touchcancel", handleTouchEvent);
 	}
 	addMobileHandlers();
-	let oldX;
-	let newX;
-	let diffX;
+	let newX1;
+	let newX2;
 	let touch;
+
 	function handleTouchEvent(e) {
+		console.log("handlers added");
+		e.stopPropagation();
 		if (e.touches.length === 0) return;
 		if (!paused) {
+			// e.preventDefault();
 			touch = e.touches[0];
 			x = touch.pageX;
-			let newX1 =
-				x - (window.innerWidth - canvas.width + movableStick.width) / 2;
-			let newX2 = newX1 + movableStick.width;
+			newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+			newX2 = newX1 + movableStick.width;
 			movableStick.x1 = newX1;
 			movableStick.x2 = newX2;
 			if (newX1 < 10) {
