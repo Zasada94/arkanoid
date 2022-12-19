@@ -12,6 +12,7 @@ import { colors, levels } from "./src/levels";
 import { sounds, playSound } from "./src/sound";
 import "./gamePage.css";
 import { scorePage } from "./src/scorePage.js";
+import { sendStats } from "./src/sendStats";
 
 export function gamePage() {
 	// canvas
@@ -19,7 +20,7 @@ export function gamePage() {
 	app.innerHTML = `
 <div id="gameContainer">
 	<div id="scoreContainer">
-		<span id="scoreSpan">Score: 0</span>
+		<span id="scoreGameSpan">Score: 0</span>
 
 			<div id="livesContainer">
 				<img id="livesIcon" src="./public/img/02/pilka_01.png">
@@ -38,10 +39,11 @@ export function gamePage() {
 	let canvas = document.getElementById("canvas");
 	let body = document.getElementById("body");
 	let gameContainer = document.getElementById("gameContainer");
-	let scoreSpan = document.getElementById("scoreSpan");
+	let scoreGameSpan = document.getElementById("scoreGameSpan");
 	let livesSpan = document.getElementById("livesSpan");
 	let levelsSpan = document.getElementById("levelsSpan");
 	let pauseButton = document.getElementById("pauseButton");
+	let pauseButtonImg = document.getElementById("pauseButtonImg");
 	let scoreContainer = document.getElementById("scoreContainer");
 	let context = canvas.getContext("2d");
 
@@ -59,6 +61,14 @@ export function gamePage() {
 		context.lineWidth = width;
 		context.strokeStyle = color;
 		context.stroke();
+	};
+
+	var drawPaddle = function (x1, y1, x2, y2, color) {
+		context.beginPath();
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.fillStyle = color;
+		context.fill();
 	};
 
 	var drawRectangle = function (x, y, width, height, color) {
@@ -351,6 +361,26 @@ export function gamePage() {
 		}
 	}
 
+	class Paddle {
+		// cross stick is not now :(
+		constructor(x1, y1, x2, y2, color) {
+			this.x1 = x1;
+			this.y1 = y1;
+			this.x2 = x2;
+			this.y2 = y2;
+			this.color = color;
+			this.angle = (Math.atan2(y2 - y1, x2 - x1) * 180.0) / Math.PI;
+			this.assets = [];
+			this.getAsset();
+		}
+		draw() {
+			drawPaddle(this.x1, this.y1, this.x2, this.y2, this.color);
+		}
+		getAsset() {
+			stickList.push([this, this.angle]);
+		}
+	}
+
 	// default
 	let topStick = new Stick(
 		0.01 * width,
@@ -377,15 +407,15 @@ export function gamePage() {
 		"#000"
 	);
 
-	let movableStick = new Stick(
+	let movableStick = new Paddle(
 		width / 2 - width / 10,
 		0.9 * height,
 		width / 2 + width / 10,
 		0.9 * height,
-		0.034 * width,
 		"rgba(0,0,0,0)"
 	);
 
+	// "#0143ff" paddle color
 	// movableStick.x1 = width / 2 - paddleWidth / 2;
 	// movableStick.y1 = 0.9 * height;
 	// movableStick.x2 = width / 2 + paddleWidth / 2;
@@ -416,7 +446,7 @@ export function gamePage() {
 			this.blockIndex = { x1: 0, y1: 0, x2: 0, y2: 0 };
 			// x1, y1, x2, y2 are not point, index
 			this.speed = 0; // per frame
-			this.color = "rgba(0,0,0,0)";
+			this.color = "black";
 			this.addList();
 			this.brokenBlock = new Array(); // this list for will be broken block
 			this.readyToGo = true;
@@ -1002,7 +1032,7 @@ export function gamePage() {
 	// movableStick.x1 = width / 2 - width / 12;
 	// movableStick.x2 = width / 2 + width / 12;
 	function getCoor(e) {
-		console.log("desktop handler added");
+		// console.log("desktop handler added");
 		if (!paused) {
 			x = e.clientX;
 			y = e.clientY;
@@ -1026,10 +1056,16 @@ export function gamePage() {
 	}
 
 	function addMobileHandlers() {
-		body.addEventListener("touchstart", handleTouchEvent);
-		body.addEventListener("touchmove", handleTouchEvent);
-		body.addEventListener("touchend", handleTouchEvent);
-		body.addEventListener("touchcancel", handleTouchEvent);
+		// body.addEventListener("touchstart", handleTouchEvent, { passive: false });
+		canvas.addEventListener(
+			"touchmove",
+			(e) => {
+				handleTouchEvent(e);
+			},
+			{ passive: false }
+		);
+		// body.addEventListener("touchend", handleTouchEvent, { passive: false });
+		// body.addEventListener("touchcancel", handleTouchEvent, { passive: false });
 	}
 	addMobileHandlers();
 	let newX1;
@@ -1037,11 +1073,12 @@ export function gamePage() {
 	let touch;
 
 	function handleTouchEvent(e) {
-		console.log("handlers added");
+		// console.log("handlers added");
 		e.stopPropagation();
+		// e.stopImmediatePropagation();
 		if (e.touches.length === 0) return;
 		if (!paused) {
-			// e.preventDefault();
+			e.preventDefault();
 			touch = e.touches[0];
 			x = touch.pageX;
 			newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
@@ -1074,6 +1111,7 @@ export function gamePage() {
 		}
 
 		for (var i = 0; i < stickList.length; i++) {
+			// console.log(stickList);
 			stickList[i][0].draw();
 		}
 
@@ -1137,15 +1175,15 @@ export function gamePage() {
 		// 	width * 0.1,
 		// 	height * 0.965
 		// );
-		scoreSpan.innerText = `Score: ${score}`;
+		scoreGameSpan.innerText = `Score: ${score}`;
 		livesSpan.innerText = ` x${numberOfBall + 1}`;
 		levelsSpan.innerText = `LVL: ${level}/3`;
 
 		// pause
 		if (paused) {
-			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
+			pauseButtonImg.src = "./public/img/02/play.png";
 		} else {
-			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
+			pauseButtonImg.src = "./public/img/02/pause.png";
 		}
 	}
 
@@ -1166,9 +1204,10 @@ export function gamePage() {
 		getCoor(e);
 	});
 
-	pauseButton.addEventListener("click", () => {
+	pauseButtonImg.addEventListener("click", () => {
 		if (!paused) {
-			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
+			// pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
+			pauseButtonImg.src = "./public/img/02/pause.png";
 			for (var i = 0; i < ballList.length; i++) {
 				if (ballList[i]) {
 					ballList[i].buffer.x = ballList[i].route.x;
@@ -1180,7 +1219,8 @@ export function gamePage() {
 			speedOfBoxes(0);
 			paused = true;
 		} else {
-			pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
+			// pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
+			pauseButtonImg.src = "./public/img/02/play.png";
 			for (var i = 0; i < ballList.length; i++) {
 				if (ballList[i]) {
 					ballList[i].route.x = ballList[i].buffer.x;

@@ -9,6 +9,7 @@ export {
 	drawStick,
 	getCos,
 	getSin,
+	drawPaddle,
 };
 
 var drawCircle = function (x, y, radius, color) {
@@ -23,8 +24,16 @@ var drawStick = function (x1, y1, x2, y2, width, color) {
 	context.moveTo(x1, y1);
 	context.lineTo(x2, y2);
 	context.lineWidth = width;
-	context.strokeStyle = color;
-	context.stroke();
+	context.fillStyle = color;
+	context.fill();
+};
+
+var drawPaddle = function (x1, y1, x2, y2, color) {
+	context.beginPath();
+	context.moveTo(x1, y1);
+	context.lineTo(x2, y2);
+	context.fillStyle = color;
+	context.fill();
 };
 
 var drawRectangle = function (x, y, width, height, color) {
@@ -32,8 +41,8 @@ var drawRectangle = function (x, y, width, height, color) {
 	context.moveTo(x, y + height / 2);
 	context.lineTo(x + width, y + height / 2);
 	context.lineWidth = height;
-	context.strokeStyle = color;
-	context.stroke();
+	context.fillStyle = color;
+	context.fill();
 };
 
 var drawText = function (text, color, font, x, y) {

@@ -2,6 +2,8 @@ import "./scorePage.css";
 // import { finalPage } from "./finalPage.js";
 import { gamePage } from "../gamePage.js";
 import { rankPage } from "./rankPage.js";
+import { queue } from "./startPage";
+import { sendStats } from "./sendStats";
 var badWordsArray = [
 	"kurwa",
 	"o kurwa!",
@@ -697,16 +699,15 @@ var badWordsArray = [
 ];
 
 export function scorePage(score) {
+	sendStats("03scorePage");
 	let app = document.getElementById("app");
 	app.innerHTML = `
 <div id="scoreWrapper">
 <div id="scoreDiv">${score}</div>
 <textarea type="text" id="nick" name="nick" class="txtbox"  placeholder="Your Nick..." required></textarea>
         <button id="rankButton">
-            <img id="rankButtonImg" src="./public/img/03/button_03_2.png">
         </button>
 		<button id="playButton">
-			<img id="playButtonImg" src="./public/img/03/button_03_1.png">
 		</button>
 </div>
 `;
@@ -717,6 +718,12 @@ export function scorePage(score) {
 	const nick = document.getElementById("nick");
 	const scoreDiv = document.getElementById("scoreDiv");
 	const body = document.getElementById("body");
+	var bg_03 = queue.getResult("bg_03");
+	scoreWrapper.appendChild(bg_03);
+	var button31 = queue.getResult("button31");
+	playButton.appendChild(button31);
+	var button32 = queue.getResult("button32");
+	rankButton.appendChild(button32);
 
 	function validate() {
 		let result = true;

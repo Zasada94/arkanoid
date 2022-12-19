@@ -5,19 +5,21 @@
 
 .rankContainer {
 	position: absolute;
-	height: 177.777vw;
+	height: 100vh;
 	width: 100vw;
-	max-height: 100vh;
+	max-height: 177.777vw;
 	max-width: 56.25vh;
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;
 	left: 50%;
+	-webkit-transform: translate(-50%, 0);
+	-ms-transform: translate(-50%, 0);
 	transform: translate(-50%, 0);
-	background-image: url(./public/img/04/bg_04.png);
+	/* background-image: url(./public/img/04/bg_04.png);
 	background-repeat: no-repeat;
 	background-size: contain;
-	background-position: center;
+	background-position: center; */
 }
 
 .rankContainer > img {
@@ -45,13 +47,20 @@
 }
 
 ul {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: column;
 	flex-direction: column;
 	position: absolute;
 	top: 57%;
 	left: 50%;
 	width: 80%;
 	font-size: 2.5vh;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 	font-family: sora-bold;
 	color: black;
@@ -62,22 +71,31 @@ ul.active {
 }
 
 li {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
 	justify-content: space-between;
 }
 #number_rows {
 	font-family: sora-bold;
+	-ms-flex-preferred-size: 9%;
 	flex-basis: 9%;
 }
 
 #nickSpan {
 	font-family: sora;
+	-ms-flex-item-align: left;
+	-ms-grid-row-align: left;
 	align-self: left;
+	-ms-flex-preferred-size: 60%;
 	flex-basis: 60%;
 }
 
 #scoreSpan {
-	flex-basis: 15%;
+	-ms-flex-preferred-size: 17%;
+	flex-basis: 17%;
 }
 
 #divider {

@@ -1,15 +1,16 @@
 import "./rankPage.css";
 import { gamePage } from "../gamePage";
+import { queue } from "./startPage";
+import { sendStats } from "./sendStats";
 
 var counter = 0;
 
 export function rankPage(score, nickValue) {
+	sendStats("04rankPage");
 	// startCounting();
 	app.innerHTML = `
 <section class="rankContainer" id="rankContainer">
 <button id="againButton">
-<img id="againButtonImg" src="./public/img/04/button_04_1.png">
-
 </button>
 <ul id='list'>
 <li id=1></li>
@@ -54,6 +55,10 @@ alt="divider"
 
 	const liArray = [li1, li2, li3, li4, li5, li6, li7, li8, li9, li10];
 
+	var bg_04 = queue.getResult("bg_04");
+	rankContainer.appendChild(bg_04);
+	var button41 = queue.getResult("button41");
+	againButton.appendChild(button41);
 	againButton.onclick = function () {
 		// timeP5 = parseInt(getTimeSpentOnSite() / 1000).toString();
 		gamePage();

@@ -4,13 +4,8 @@
 	width: 100vw;
 	max-height: 177.777vw;
 	max-width: 56.25vh;
-	/* background-image: url(./img/01/bg_01.jpg); */
-	/* background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center; */
+	min-height: -webkit-fill-available;
 	left: 50%;
-	-webkit-transform: translate(-50%, 0);
-	-ms-transform: translate(-50%, 0);
 	transform: translate(-50%, 0);
 	overflow: hidden;
 }
@@ -32,15 +27,10 @@
 	width: 100%;
 	height: 7.5%;
 	z-index: 3;
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
-	-ms-flex-pack: distribute;
 	justify-content: space-around;
 	font-family: sora;
 	font-size: 2.5vh;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
 	align-items: center;
 }
 
@@ -75,15 +65,11 @@
 }
 
 #scoreGameSpan {
-	-ms-flex-preferred-size: 30%;
 	flex-basis: 30%;
 }
 
 #livesContainer {
-	-ms-flex-preferred-size: 15%;
 	flex-basis: 15%;
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	height: 42%;
 }
