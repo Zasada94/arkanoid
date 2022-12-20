@@ -442,7 +442,7 @@ export function gamePage() {
 	// movableStick.y1 = 0.9 * height;
 	// movableStick.x2 = width / 2 + paddleWidth / 2;
 	// movableStick.y2 = 0.9 * height;
-	movableStick.width = paddleWidth * 2;
+	movableStick.width = paddleWidth;
 
 	let numberOfUnbrokenBlocks;
 	let numberOfBall;
@@ -603,8 +603,8 @@ export function gamePage() {
 				playSound("click");
 			} else if (this.coordinate.y > height * 0.92) {
 				this.route.x = this.route.y = this.speed = 0;
-				this.coordinate.x = -30;
-				this.coordinate.y = -30;
+				this.coordinate.x = -50;
+				this.coordinate.y = -50;
 				numberOfLiveBall--;
 				if (numberOfLiveBall == 0) {
 					playSound("negative");
@@ -812,7 +812,7 @@ export function gamePage() {
 
 	let mainBall = new Ball(
 		movableStick.x1 + (movableStick.width - ballWidth) / 2,
-		movableStick.y1 - ballWidth
+		movableStick.y1 - ballWidth * 1.3
 	);
 	mainBall.isMain = true;
 
@@ -1068,6 +1068,7 @@ export function gamePage() {
 			y = e.clientY;
 			let newX1 =
 				x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+			console.log(x, window.innerWidth, canvas.width, movableStick.width);
 			let newX2 = newX1 + movableStick.width;
 			movableStick.x1 = newX1;
 			movableStick.x2 = newX2;
@@ -1112,10 +1113,15 @@ export function gamePage() {
 			e.stopPropagation();
 			touch = e.touches[0];
 			x = touch.pageX;
-			newX1 = 2 * x - (window.innerWidth - gameWidth + movableStick.width) / 2;
-			// console.log(newX1);
+			let xPrim = (x / windowWidth) * width;
+
+			console.log(x, window.innerWidth, canvas.width, movableStick.width);
+			newX1 =
+				2 * x - (2 * window.innerWidth - canvas.width + movableStick.width) / 2;
+
 			newX2 = newX1 + movableStick.width;
 			movableStick.x1 = newX1;
+			// console.log(movableStick.x1);
 			movableStick.x2 = newX2;
 			if (newX1 < 10) {
 				movableStick.x1 = 10;
