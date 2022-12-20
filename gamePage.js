@@ -47,6 +47,7 @@ export function gamePage() {
 	let scoreContainer = document.getElementById("scoreContainer");
 	let context = canvas.getContext("2d");
 	context.imageSmoothingEnabled = false;
+	let dpi = window.devicePixelRatio;
 
 	var drawCircle = function (x, y, radius, color) {
 		context.beginPath();
@@ -322,35 +323,36 @@ export function gamePage() {
 	let width;
 	let windowWidth;
 	let windowHeight;
-	let gameWidth;
-	let gameHeight;
-	// width = gameContainer.offsetWidth;
-	// height = window.innerHeight;
+	let gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+
 	windowWidth = body.offsetWidth;
 	windowHeight = body.offsetHeight;
 
-	if (width >= windowWidth) {
-		width = window.innerWidth;
-		scoreContainer.classList.add("active");
-		height = (width * 16) / 9;
-	} else {
-		scoreContainer.classList.remove("active");
-		height = window.innerHeight;
-		width = (height * 9) / 16;
+	function fix_dpi() {
+		// canvas.setAttribute("height", height);
+		// canvas.setAttribute("width", width);
+		//get CSS height
+		//the + prefix casts it to an integer
+		//the slice method gets rid of "px"
+		let style_height = +getComputedStyle(canvas)
+			.getPropertyValue("height")
+			.slice(0, -2);
+		//get CSS width
+		let style_width = +getComputedStyle(canvas)
+			.getPropertyValue("width")
+			.slice(0, -2);
+		//scale the canvas
+		canvas.setAttribute("height", style_height * dpi);
+		canvas.setAttribute("width", style_width * dpi);
 	}
+	fix_dpi();
+	width = canvas.width;
+	height = canvas.height;
 	let ballWidth = width / 20;
 	let paddleWidth = width / 5;
 	let paddleHeight = paddleWidth / 4.63;
 	let blockWidth = width / 10;
 	let blockHeight = blockWidth * 0.62;
-	windowWidth = body.offsetWidth;
-	windowHeight = body.offsetHeight;
-	paddleWidth = width / 5;
-	paddleHeight = paddleWidth / 4.63;
-	blockWidth = width / 10;
-	blockHeight = blockWidth * 0.62;
-	canvas.setAttribute("height", height);
-	canvas.setAttribute("width", width);
 
 	class Stick {
 		// cross stick is not now :(
@@ -814,8 +816,13 @@ export function gamePage() {
 	mainBall.isMain = true;
 
 	const CanvasResize = () => {
+		gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+		// width = gameContainer.offsetWidth;
+		// height = gameContainer.offsetHeight;
 		windowWidth = body.offsetWidth;
 		windowHeight = body.offsetHeight;
+		// canvas.setAttribute("height", height);
+		// canvas.setAttribute("width", width);
 		topStick.x1 = 0.01 * width;
 		topStick.y1 = 0.01 * width;
 		topStick.x2 = 0.99 * width;
@@ -843,28 +850,17 @@ export function gamePage() {
 		paddleHeight = paddleWidth / 4.63;
 		blockWidth = width / 10;
 		blockHeight = blockWidth * 0.62;
-		if (width >= windowWidth) {
-			width = window.innerWidth;
-			gameWidth = window.innerWidth;
+		if (gameContainer.width >= windowWidth) {
 			scoreContainer.classList.add("active");
-			height = (width * 16) / 9;
-			gameHeight = (width * 16) / 9;
 		} else {
 			scoreContainer.classList.remove("active");
-			height = window.innerHeight;
-			gameHeight = window.innerHeight;
-			width = (height * 9) / 16;
-			gameWidth = (height * 9) / 16;
 		}
-		canvas.setAttribute("height", height);
-		canvas.setAttribute("width", width);
-		gameContainer.style.width = `${gameWidth}px`;
-		gameContainer.style.height = `${gameHeight}px`;
-		gameContainer.style.maxWidth = `${gameHeight * 0.56}px`;
-		gameContainer.style.maxHeight = `${gameWidth * 1.77}px`;
-		// gameContainer.setAttribute("height", height);
-		// gameContainer.setAttribute("width", width);
+		gameContainer.style.maxHeight = `${gameHeight}px`;
+		fix_dpi();
+		width = canvas.width;
+		height = canvas.height;
 	};
+
 	CanvasResize();
 	window.addEventListener("resize", CanvasResize);
 
