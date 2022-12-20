@@ -53,6 +53,7 @@ function init() {
 
 	// let gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
 	let gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+	let gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
 	// let windowWidth = body.offsetWidth;
 	// let windowHeight = body.offsetHeight;
 	// app.style.width = `${gameWidth}px`;
@@ -66,6 +67,7 @@ function init() {
 
 	const startResize = () => {
 		gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+		gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
 		// 	windowWidth = body.offsetWidth;
 		// 	windowHeight = body.offsetHeight;
 		// 	if (gameWidth >= windowWidth) {
@@ -85,6 +87,8 @@ function init() {
 		// 	startContainer.style.maxHeight = `${gameWidth * 1.77}px`;
 		startContainer.style.maxHeight = `${gameHeight}px`;
 		app.style.maxHeight = `${gameHeight}px`;
+		startContainer.style.maxWidth = `${gameWidth}px`;
+		app.style.maxWidth = `${gameWidth}px`;
 	};
 	startResize();
 	window.addEventListener("resize", startResize);

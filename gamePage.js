@@ -324,6 +324,7 @@ export function gamePage() {
 	let windowWidth;
 	let windowHeight;
 	let gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+	let gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
 
 	windowWidth = body.offsetWidth;
 	windowHeight = body.offsetHeight;
@@ -445,7 +446,7 @@ export function gamePage() {
 
 	let numberOfUnbrokenBlocks;
 	let numberOfBall;
-	let speedOfBall = 7;
+	let speedOfBall = (canvas.height * 7) / 1000;
 	let level;
 	let score;
 	let multipleBlock = 0;
@@ -600,7 +601,7 @@ export function gamePage() {
 				score += Math.pow(multipleBlock, 2);
 				multipleBlock = 0;
 				playSound("click");
-			} else if (this.coordinate.y > height * 0.9) {
+			} else if (this.coordinate.y > height * 0.92) {
 				this.route.x = this.route.y = this.speed = 0;
 				this.coordinate.x = -30;
 				this.coordinate.y = -30;
@@ -787,9 +788,9 @@ export function gamePage() {
 			}
 		}
 		updatePositionOnMovableStick() {
+			this.coordinate.y = movableStick.y1 - ballWidth * 1.3;
 			this.coordinate.x =
 				movableStick.x1 + (movableStick.width - ballWidth) / 2;
-			this.coordinate.y = movableStick.y1 - ballWidth * 1.3;
 		}
 
 		reset() {
@@ -816,7 +817,17 @@ export function gamePage() {
 	mainBall.isMain = true;
 
 	const CanvasResize = () => {
+		mainBall.startX = movableStick.x1 + (movableStick.width - ballWidth) / 2;
+		mainBall.startY = movableStick.y1 - ballWidth * 1.5;
+		mainBall.coordinate.x = mainBall.startX;
+		mainBall.coordinate.y = mainBall.startY;
+		ballWidth = width / 20;
+		paddleWidth = width / 5;
+		paddleHeight = paddleWidth / 4.63;
+		blockWidth = width / 10;
+		blockHeight = blockWidth * 0.62;
 		gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+		gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
 		// width = gameContainer.offsetWidth;
 		// height = gameContainer.offsetHeight;
 		windowWidth = body.offsetWidth;
@@ -841,21 +852,16 @@ export function gamePage() {
 		movableStick.y2 = 0.9 * height;
 		movableStick.width = paddleWidth;
 		movableStick.height = paddleHeight;
-		mainBall.startX = movableStick.x1 + (movableStick.width - ballWidth) / 2;
-		mainBall.startY = movableStick.y1 - ballWidth * 1.5;
-		mainBall.coordinate.x = mainBall.startX;
-		mainBall.coordinate.y = mainBall.startY;
-		ballWidth = width / 20;
-		paddleWidth = width / 5;
-		paddleHeight = paddleWidth / 4.63;
-		blockWidth = width / 10;
-		blockHeight = blockWidth * 0.62;
+
 		if (gameContainer.width >= windowWidth) {
 			scoreContainer.classList.add("active");
 		} else {
 			scoreContainer.classList.remove("active");
 		}
 		gameContainer.style.maxHeight = `${gameHeight}px`;
+		gameContainer.style.maxWidth = `${gameWidth}px`;
+		canvas.style.maxHeight = `${gameHeight}px`;
+		canvas.style.maxWidth = `${gameWidth}px`;
 		fix_dpi();
 		width = canvas.width;
 		height = canvas.height;
@@ -1106,7 +1112,8 @@ export function gamePage() {
 			e.stopPropagation();
 			touch = e.touches[0];
 			x = touch.pageX;
-			newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+			newX1 = 2 * x - (window.innerWidth - gameWidth + movableStick.width) / 2;
+			// console.log(newX1);
 			newX2 = newX1 + movableStick.width;
 			movableStick.x1 = newX1;
 			movableStick.x2 = newX2;
