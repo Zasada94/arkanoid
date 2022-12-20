@@ -46,6 +46,7 @@ export function gamePage() {
 	let pauseButtonImg = document.getElementById("pauseButtonImg");
 	let scoreContainer = document.getElementById("scoreContainer");
 	let context = canvas.getContext("2d");
+	context.imageSmoothingEnabled = false;
 
 	var drawCircle = function (x, y, radius, color) {
 		context.beginPath();
@@ -128,6 +129,7 @@ export function gamePage() {
 		draw() {
 			const powerUpImg = new Image();
 			powerUpImg.src = "./public/img/02/power_up.png";
+			context.imageSmoothingEnabled = false;
 			context.drawImage(powerUpImg, this.x1, this.y1, this.width, this.height);
 			this.fall();
 		}
@@ -318,18 +320,33 @@ export function gamePage() {
 
 	let height;
 	let width;
-	let widthInt = parseInt(width);
 	let windowWidth;
 	let windowHeight;
-	width = gameContainer.offsetWidth;
-	height = gameContainer.offsetHeight;
+	// width = gameContainer.offsetWidth;
+	// height = window.innerHeight;
 	windowWidth = body.offsetWidth;
 	windowHeight = body.offsetHeight;
+
+	if (width >= windowWidth) {
+		width = window.innerWidth;
+		scoreContainer.classList.add("active");
+		height = (width * 16) / 9;
+	} else {
+		scoreContainer.classList.remove("active");
+		height = window.innerHeight;
+		width = (height * 9) / 16;
+	}
 	let ballWidth = width / 20;
 	let paddleWidth = width / 5;
 	let paddleHeight = paddleWidth / 4.63;
 	let blockWidth = width / 10;
 	let blockHeight = blockWidth * 0.62;
+	windowWidth = body.offsetWidth;
+	windowHeight = body.offsetHeight;
+	paddleWidth = width / 5;
+	paddleHeight = paddleWidth / 4.63;
+	blockWidth = width / 10;
+	blockHeight = blockWidth * 0.62;
 	canvas.setAttribute("height", height);
 	canvas.setAttribute("width", width);
 
@@ -795,13 +812,8 @@ export function gamePage() {
 	mainBall.isMain = true;
 
 	const CanvasResize = () => {
-		width = gameContainer.offsetWidth;
-		height = gameContainer.offsetHeight;
-		widthInt = parseInt(width);
 		windowWidth = body.offsetWidth;
 		windowHeight = body.offsetHeight;
-		canvas.setAttribute("height", height);
-		canvas.setAttribute("width", width);
 		topStick.x1 = 0.01 * width;
 		topStick.y1 = 0.01 * width;
 		topStick.x2 = 0.99 * width;
@@ -829,14 +841,20 @@ export function gamePage() {
 		paddleHeight = paddleWidth / 4.63;
 		blockWidth = width / 10;
 		blockHeight = blockWidth * 0.62;
-		widthInt = parseInt(width);
 		if (width >= windowWidth) {
+			width = window.innerWidth;
 			scoreContainer.classList.add("active");
+			height = (width * 16) / 9;
 		} else {
 			scoreContainer.classList.remove("active");
+			height = window.innerHeight;
+			width = (height * 9) / 16;
 		}
+		canvas.setAttribute("height", height);
+		canvas.setAttribute("width", width);
+		// gameContainer.setAttribute("height", height);
+		// gameContainer.setAttribute("width", width);
 	};
-
 	CanvasResize();
 	window.addEventListener("resize", CanvasResize);
 
@@ -1074,11 +1092,12 @@ export function gamePage() {
 
 	function handleTouchEvent(e) {
 		// console.log("handlers added");
-		e.stopPropagation();
+
 		// e.stopImmediatePropagation();
 		if (e.touches.length === 0) return;
 		if (!paused) {
-			e.preventDefault();
+			// e.preventDefault();
+			e.stopPropagation();
 			touch = e.touches[0];
 			x = touch.pageX;
 			newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
