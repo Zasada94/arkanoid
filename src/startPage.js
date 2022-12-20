@@ -50,9 +50,36 @@ function init() {
 		gamePage();
 		sendStats("02gamePage");
 	});
-}
 
-window.onload = () => {
-	sendStats("01StartPage");
-};
+	let gameHeight;
+	let gameWidth;
+	let windowWidth;
+	let windowHeight;
+
+	const startResize = () => {
+		windowWidth = body.offsetWidth;
+		windowHeight = body.offsetHeight;
+		if (gameWidth >= windowWidth) {
+			gameWidth = window.innerWidth;
+			gameHeight = (gameWidth * 16) / 9;
+		} else {
+			gameHeight = window.innerHeight;
+			gameWidth = (gameHeight * 9) / 16;
+		}
+		app.style.width = `${gameWidth}px`;
+		app.style.height = `${gameHeight}px`;
+		app.style.maxWidth = `${gameHeight * 0.56}px`;
+		app.style.maxHeight = `${gameWidth * 1.77}px`;
+		startContainer.style.width = `${gameWidth}px`;
+		startContainer.style.height = `${gameHeight}px`;
+		startContainer.style.maxWidth = `${gameHeight * 0.56}px`;
+		startContainer.style.maxHeight = `${gameWidth * 1.77}px`;
+	};
+	startResize();
+	window.addEventListener("resize", startResize);
+
+	window.onload = () => {
+		sendStats("01StartPage");
+	};
+}
 export { queue };

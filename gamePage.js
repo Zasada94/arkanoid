@@ -322,6 +322,8 @@ export function gamePage() {
 	let width;
 	let windowWidth;
 	let windowHeight;
+	let gameWidth;
+	let gameHeight;
 	// width = gameContainer.offsetWidth;
 	// height = window.innerHeight;
 	windowWidth = body.offsetWidth;
@@ -843,15 +845,23 @@ export function gamePage() {
 		blockHeight = blockWidth * 0.62;
 		if (width >= windowWidth) {
 			width = window.innerWidth;
+			gameWidth = window.innerWidth;
 			scoreContainer.classList.add("active");
 			height = (width * 16) / 9;
+			gameHeight = (width * 16) / 9;
 		} else {
 			scoreContainer.classList.remove("active");
 			height = window.innerHeight;
+			gameHeight = window.innerHeight;
 			width = (height * 9) / 16;
+			gameWidth = (height * 9) / 16;
 		}
 		canvas.setAttribute("height", height);
 		canvas.setAttribute("width", width);
+		gameContainer.style.width = `${gameWidth}px`;
+		gameContainer.style.height = `${gameHeight}px`;
+		gameContainer.style.maxWidth = `${gameHeight * 0.56}px`;
+		gameContainer.style.maxHeight = `${gameWidth * 1.77}px`;
 		// gameContainer.setAttribute("height", height);
 		// gameContainer.setAttribute("width", width);
 	};
