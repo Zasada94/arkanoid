@@ -1068,7 +1068,7 @@ export function gamePage() {
 			y = e.clientY;
 			let newX1 =
 				x - (window.innerWidth - canvas.width + movableStick.width) / 2;
-			console.log(x, window.innerWidth, canvas.width, movableStick.width);
+			// console.log(x, window.innerWidth, canvas.width, movableStick.width);
 			let newX2 = newX1 + movableStick.width;
 			movableStick.x1 = newX1;
 			movableStick.x2 = newX2;
@@ -1102,6 +1102,7 @@ export function gamePage() {
 	let newX1;
 	let newX2;
 	let touch;
+	let xPrim;
 
 	function handleTouchEvent(e) {
 		// console.log("handlers added");
@@ -1113,9 +1114,9 @@ export function gamePage() {
 			e.stopPropagation();
 			touch = e.touches[0];
 			x = touch.pageX;
-			let xPrim = (x / windowWidth) * width;
+			// let xPrim = (x / windowWidth) * width;
 
-			console.log(x, window.innerWidth, canvas.width, movableStick.width);
+			// console.log(x, window.innerWidth, canvas.width, movableStick.width);
 			newX1 =
 				2 * x - (2 * window.innerWidth - canvas.width + movableStick.width) / 2;
 
