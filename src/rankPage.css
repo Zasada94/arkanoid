@@ -5,10 +5,8 @@
 
 .rankContainer {
 	position: absolute;
-	height: 100vh;
-	width: 100vw;
-	max-height: 177.777vw;
-	max-width: 56.25vh;
+	height: 100%;
+	width: 100%;
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;

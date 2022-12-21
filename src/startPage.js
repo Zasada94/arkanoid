@@ -87,8 +87,8 @@ function init() {
 		// 	startContainer.style.maxHeight = `${gameWidth * 1.77}px`;
 		startContainer.style.maxHeight = `${gameHeight}px`;
 		app.style.maxHeight = `${gameHeight}px`;
-		startContainer.style.maxWidth = `${gameWidth}px`;
-		app.style.maxWidth = `${gameWidth}px`;
+		startContainer.style.maxWidth = `${(gameHeight * 9) / 16}px`;
+		app.style.maxWidth = `${(gameHeight * 9) / 16}px`;
 	};
 	startResize();
 	window.addEventListener("resize", startResize);

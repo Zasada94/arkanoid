@@ -127,7 +127,7 @@ export function gamePage() {
 			this.x2 = x + this.width;
 			this.y2 = y + this.height;
 			this.color = colorOfBoxes[func.name];
-			this.speed = 3;
+			this.speed = (canvas.height * 3) / 1000;
 			this.indexInBoxList = boxList.length;
 			boxList[this.indexInBoxList] = this;
 		}
@@ -450,7 +450,7 @@ export function gamePage() {
 
 	let numberOfUnbrokenBlocks;
 	let numberOfBall;
-	let speedOfBall = (canvas.height * 7) / 1000;
+	let speedOfBall = (canvas.height * 10) / 1000;
 	let level;
 	let score;
 	let multipleBlock = 0;
@@ -792,11 +792,10 @@ export function gamePage() {
 			}
 		}
 		updatePositionOnMovableStick() {
-			this.coordinate.y = movableStick.y1 - ballWidth * 1.3;
+			this.coordinate.y = movableStick.y1 - ballWidth * 1.5;
 			this.coordinate.x =
 				movableStick.x1 + (movableStick.width - ballWidth) / 2;
 		}
-
 		reset() {
 			mainBall.updatePositionOnMovableStick();
 			mainBall.readyToGo = true;
@@ -820,26 +819,45 @@ export function gamePage() {
 			scorePage(score);
 		}
 	}
+
 	let newX1;
 	let newX2;
 	let touch;
 	let xPrim;
+
 	function addMobileHandlers() {
-		// body.addEventListener("touchstart", handleTouchEvent, { passive: false });
-		body.addEventListener(
+		// canvas.addEventListener(
+		// 	"touchstart",
+		// 	(e) => {
+		// 		handleTouchEvent(e);
+		// 	},
+		// 	{ passive: false }
+		// );
+		canvas.addEventListener(
 			"touchmove",
 			(e) => {
 				handleTouchEvent(e);
 			},
 			{ passive: false }
 		);
-		// body.addEventListener("touchend", handleTouchEvent, { passive: false });
-		// body.addEventListener("touchcancel", handleTouchEvent, { passive: false });
+		canvas.addEventListener(
+			"touchend",
+			(e) => {
+				handleTouchEvent(e);
+			},
+			{ passive: false }
+		);
+		canvas.addEventListener(
+			"touchcancel",
+			(e) => {
+				handleTouchEvent(e);
+			},
+			{ passive: false }
+		);
 	}
 
 	function handleTouchEvent(e) {
 		// console.log("handlers added");
-
 		// e.stopImmediatePropagation();
 		if (e.touches.length === 0) return;
 		if (!paused) {
@@ -848,24 +866,45 @@ export function gamePage() {
 			touch = e.touches[0];
 			x = touch.pageX;
 			// let xPrim = (x / windowWidth) * width;
-
-			// console.log(x, window.innerWidth, canvas.width, movableStick.width);
-			newX1 =
-				2 * x - (2 * window.innerWidth - canvas.width + movableStick.width) / 2;
-
-			newX2 = newX1 + movableStick.width;
-			movableStick.x1 = newX1;
-			// console.log(movableStick.x1);
-			movableStick.x2 = newX2;
-			if (newX1 < 10) {
-				movableStick.x1 = 10;
-				movableStick.x2 = movableStick.width + 10;
-			} else if (newX2 > canvas.width - 10) {
-				movableStick.x1 = canvas.width - 10 - movableStick.width;
-				movableStick.x2 = canvas.width - 10;
-			}
-			if (mainBall.readyToGo) {
-				mainBall.updatePositionOnMovableStick();
+			console.log(x, window.innerWidth, canvas.width, movableStick.width);
+			if (gameContainer.offsetWidth >= windowWidth) {
+				newX1 =
+					((canvas.width - movableStick.width) / (window.innerWidth - 80)) * x -
+					paddleWidth / 2;
+				// newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+				newX2 = newX1 + movableStick.width;
+				movableStick.x1 = newX1;
+				console.log(newX1);
+				movableStick.x2 = newX2;
+				if (newX1 < 20) {
+					movableStick.x1 = 20;
+					movableStick.x2 = movableStick.width + 20;
+				} else if (newX2 > canvas.width - 20) {
+					movableStick.x1 = canvas.width - 20 - movableStick.width;
+					movableStick.x2 = canvas.width - 20;
+				}
+				if (mainBall.readyToGo) {
+					mainBall.updatePositionOnMovableStick();
+				}
+			} else {
+				newX1 =
+					2 * x -
+					(2 * window.innerWidth - canvas.width + movableStick.width) / 2;
+				// newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+				newX2 = newX1 + movableStick.width;
+				movableStick.x1 = newX1;
+				// console.log(newX1);
+				movableStick.x2 = newX2;
+				if (newX1 < 10) {
+					movableStick.x1 = 10;
+					movableStick.x2 = movableStick.width + 10;
+				} else if (newX2 > canvas.width - 10) {
+					movableStick.x1 = canvas.width - 10 - movableStick.width;
+					movableStick.x2 = canvas.width - 10;
+				}
+				if (mainBall.readyToGo) {
+					mainBall.updatePositionOnMovableStick();
+				}
 			}
 		}
 	}
@@ -879,6 +918,7 @@ export function gamePage() {
 		mainBall.isMain = true;
 
 		const CanvasResize = () => {
+			// fix_dpi();
 			movableStick.x1 = width / 2 - paddleWidth / 2;
 			movableStick.y1 = 0.9 * height;
 			movableStick.x2 = width / 2 + paddleWidth / 2;
@@ -912,20 +952,17 @@ export function gamePage() {
 			rightStick.y1 = 0.01 * width;
 			rightStick.x2 = 0.99 * width;
 			rightStick.y2 = 0.99 * height;
-
 			movableStick.width = paddleWidth;
 			movableStick.height = paddleHeight;
-
-			if (gameContainer.width >= windowWidth) {
+			if (gameContainer.offsetWidth >= windowWidth) {
 				scoreContainer.classList.add("active");
 			} else {
 				scoreContainer.classList.remove("active");
 			}
 			gameContainer.style.maxHeight = `${gameHeight}px`;
-			gameContainer.style.maxWidth = `${gameWidth}px`;
+			gameContainer.style.maxWidth = `${(gameHeight * 9) / 16}px`;
 			canvas.style.maxHeight = `${gameHeight}px`;
-			canvas.style.maxWidth = `${gameWidth}px`;
-			fix_dpi();
+			canvas.style.maxWidth = `${(gameHeight * 9) / 16}px`;
 			width = canvas.width;
 			height = canvas.height;
 		};
