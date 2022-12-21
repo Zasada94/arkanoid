@@ -15,6 +15,10 @@ import { scorePage } from "./src/scorePage.js";
 import { sendStats } from "./src/sendStats";
 
 export function gamePage() {
+	// draw
+	let drawMain;
+	let drawBar;
+	let mainBall;
 	// canvas
 	let app = document.getElementById("app");
 	app.innerHTML = `
@@ -315,9 +319,9 @@ export function gamePage() {
 		window.requestAnimationFrame(gameLoop);
 	}
 
-	window.onload = function () {
-		window.requestAnimationFrame(gameLoop);
-	};
+	// window.onload = function () {
+	// 	window.requestAnimationFrame(gameLoop);
+	// };
 
 	let height;
 	let width;
@@ -809,192 +813,6 @@ export function gamePage() {
 			controlForGameOver();
 		}
 	}
-
-	let mainBall = new Ball(
-		movableStick.x1 + (movableStick.width - ballWidth) / 2,
-		movableStick.y1 - ballWidth * 1.3
-	);
-	mainBall.isMain = true;
-
-	const CanvasResize = () => {
-		mainBall.startX = movableStick.x1 + (movableStick.width - ballWidth) / 2;
-		mainBall.startY = movableStick.y1 - ballWidth * 1.5;
-		mainBall.coordinate.x = mainBall.startX;
-		mainBall.coordinate.y = mainBall.startY;
-		ballWidth = width / 20;
-		paddleWidth = width / 5;
-		paddleHeight = paddleWidth / 4.63;
-		blockWidth = width / 10;
-		blockHeight = blockWidth * 0.62;
-		gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
-		gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
-		// width = gameContainer.offsetWidth;
-		// height = gameContainer.offsetHeight;
-		windowWidth = body.offsetWidth;
-		windowHeight = body.offsetHeight;
-		// canvas.setAttribute("height", height);
-		// canvas.setAttribute("width", width);
-		topStick.x1 = 0.01 * width;
-		topStick.y1 = 0.01 * width;
-		topStick.x2 = 0.99 * width;
-		topStick.y2 = 0.01 * width;
-		leftStick.x1 = 0.01 * width;
-		leftStick.y1 = 0.01 * width;
-		leftStick.x2 = 0.01 * width;
-		leftStick.y2 = 0.99 * height;
-		rightStick.x1 = 0.99 * width;
-		rightStick.y1 = 0.01 * width;
-		rightStick.x2 = 0.99 * width;
-		rightStick.y2 = 0.99 * height;
-		movableStick.x1 = width / 2 - paddleWidth / 2;
-		movableStick.y1 = 0.9 * height;
-		movableStick.x2 = width / 2 + paddleWidth / 2;
-		movableStick.y2 = 0.9 * height;
-		movableStick.width = paddleWidth;
-		movableStick.height = paddleHeight;
-
-		if (gameContainer.width >= windowWidth) {
-			scoreContainer.classList.add("active");
-		} else {
-			scoreContainer.classList.remove("active");
-		}
-		gameContainer.style.maxHeight = `${gameHeight}px`;
-		gameContainer.style.maxWidth = `${gameWidth}px`;
-		canvas.style.maxHeight = `${gameHeight}px`;
-		canvas.style.maxWidth = `${gameWidth}px`;
-		fix_dpi();
-		width = canvas.width;
-		height = canvas.height;
-	};
-
-	CanvasResize();
-	window.addEventListener("resize", CanvasResize);
-
-	class Block {
-		constructor(xInd, yInd, color, img, img2, img3) {
-			this.indexInBlockList = blockList.length;
-			blockList.push(this);
-			this.index = { x: xInd, y: yInd };
-			this.color = color;
-			this.typeOfTheBox = null;
-			mapGrid[xInd][yInd] = this;
-			numberOfUnbrokenBlocks++;
-			this.tryYourChance();
-			this.blockImg = new Image();
-			this.blockImg.src = img;
-			this.blockImg2 = new Image();
-			this.blockImg2.src = img2;
-			this.blockImg3 = new Image();
-			this.blockImg3.src = img3;
-		}
-		draw() {
-			context.drawImage(
-				this.blockImg,
-				(this.index.x * width) / 10,
-				(this.index.y * height) / 30,
-				blockWidth,
-				blockHeight
-			);
-			// drawRectangle(
-			// 	(this.index.x * widthInt) / 18 - widthInt / 40,
-			// 	(this.index.y * widthInt) / 36,
-			// 	widthInt / 20,
-			// 	widthInt / 40,
-			// 	this.color
-			// );
-		}
-
-		// drawRectangle(
-		//   13 + this.index.x * 20,
-		//   13 + this.index.y * 11,
-		//   19,
-		//   10,
-		//   this.color
-		// );
-
-		explode() {
-			mapGrid[this.index.x][this.index.y] = null;
-
-			// context.clearRect(0, 0, width, height);
-			// context.drawImage(
-			// 	this.blockImg2,
-			// 	(this.index.x * width) / 10,
-			// 	(this.index.y * height) / 30,
-			// 	blockWidth,
-			// 	blockHeight
-			// );
-			blockList[this.indexInBlockList].blockImg = this.blockImg2;
-
-			setTimeout(() => {
-				blockList[this.indexInBlockList].blockImg = this.blockImg3;
-			}, 30);
-			setTimeout(() => {
-				blockList[this.indexInBlockList] = null;
-			}, 60);
-			// console.log(blockList);
-			playSound("blockCrush");
-			numberOfUnbrokenBlocks--;
-			score += 10;
-			multipleBlock++;
-			controlForLevelUp();
-			if (this.typeOfTheBox) {
-				new Box(
-					(this.index.x * width) / 10 + blockWidth / 2 - width / 50,
-					(this.index.y * height) / 30,
-					this.typeOfTheBox
-				);
-			}
-		}
-		tryYourChance() {
-			let toBeOrNotToBe = Math.floor(Math.random() * 100); // [0 - 99]
-			let which = Math.floor(Math.random() * 7); // [0 - 6]
-			let chanceforSuperBall = Math.floor(Math.random() * 3); // [0 - 2]  for superBall
-			let yesOrNoForThreeBalls = Math.floor(Math.random() * 2); // [0 - 1]  for threeBalls
-			if (toBeOrNotToBe < 10) {
-				// 10%
-				this.typeOfTheBox = threeBalls;
-				// switch (which) {
-				// 	case 0:
-				// 		this.typeOfTheBox = narrowMovableStick;
-				// 		break;
-				// 	case 1:
-				// 		this.typeOfTheBox = expandMovableStick;
-				// 		break;
-				// 	case 2:
-				// 		this.typeOfTheBox = speedUp;
-				// 		break;
-				// 	case 3:
-				// 		this.typeOfTheBox = speedDown;
-				// 		break;
-				// 	case 4:
-				// 		this.typeOfTheBox = killBall;
-				// 		break;
-				// 	case 5:
-				// 		// superBall is excellent so I want to be rare it :d
-				// 		// this.typeOfTheBox = killBall;
-				// 		// if (chanceforSuperBall == 0) {
-				// 		this.typeOfTheBox = superBall;
-				// 		// }
-				// 		break;
-				// 	case 6:
-				// 		// this.typeOfTheBox = killBall;
-				// 		// if (yesOrNoForThreeBalls == 0) {
-				// 		this.typeOfTheBox = threeBalls;
-				// 		// }
-				// 		break;
-				// }
-			}
-		}
-	}
-
-	// other functions
-
-	function controlForLevelUp() {
-		if (!numberOfUnbrokenBlocks) {
-			levelUp();
-		}
-	}
-
 	function controlForGameOver() {
 		if (numberOfBall < 0) {
 			clearBoxList();
@@ -1002,93 +820,13 @@ export function gamePage() {
 			scorePage(score);
 		}
 	}
-
-	function start() {
-		if (!paused && mainBall.readyToGo) {
-			mainBall.readyToGo = false;
-			mainBall.go(90, speedOfBall);
-		}
-	}
-
-	function addToScore(point) {
-		score += point;
-	}
-
-	function levelUp() {
-		addToScore(100 * level + Math.pow(multipleBlock, 2));
-		level++;
-		numberOfBall++;
-		mainBall.reset();
-		if (level != 4) {
-			setTimeout(() => {
-				loadLevel(level);
-			}, 100);
-		} else {
-			scorePage(score);
-		}
-	}
-
-	function gamePlay() {
-		numberOfBall = 2;
-		level = 1;
-		score = 0;
-		loadLevel(level);
-		drawMain = drawGame;
-		drawBar = drawBoard;
-	}
-
-	function loadLevel(index) {
-		playSound("levelUp");
-		numberOfUnbrokenBlocks = 0;
-		clearBoxList();
-		clearMapGrid();
-		clearBlockList();
-		// to load for each block in the level
-		for (var i = 0; i < levels[index].length; i++) {
-			new Block(
-				levels[index][i].xInd,
-				levels[index][i].yInd,
-				levels[index][i].color,
-				levels[index][i].img,
-				levels[index][i].img2,
-				levels[index][i].img3
-			);
-		}
-	}
-
-	function clearBlockList() {
-		blockList = [];
-	}
-	// movableStick.x1 = width / 2 - width / 12;
-	// movableStick.x2 = width / 2 + width / 12;
-	function getCoor(e) {
-		// console.log("desktop handler added");
-		if (!paused) {
-			x = e.clientX;
-			y = e.clientY;
-			let newX1 =
-				x - (window.innerWidth - canvas.width + movableStick.width) / 2;
-			// console.log(x, window.innerWidth, canvas.width, movableStick.width);
-			let newX2 = newX1 + movableStick.width;
-			movableStick.x1 = newX1;
-			movableStick.x2 = newX2;
-			if (newX1 < 10) {
-				movableStick.x1 = 10;
-				movableStick.x2 = movableStick.width + 10;
-			} else if (newX2 > canvas.width - 10) {
-				movableStick.x1 = canvas.width - 10 - movableStick.width;
-				movableStick.x2 = canvas.width - 10;
-			}
-
-			if (mainBall.readyToGo) {
-				mainBall.updatePositionOnMovableStick();
-			}
-		}
-	}
-
+	let newX1;
+	let newX2;
+	let touch;
+	let xPrim;
 	function addMobileHandlers() {
 		// body.addEventListener("touchstart", handleTouchEvent, { passive: false });
-		canvas.addEventListener(
+		body.addEventListener(
 			"touchmove",
 			(e) => {
 				handleTouchEvent(e);
@@ -1098,11 +836,6 @@ export function gamePage() {
 		// body.addEventListener("touchend", handleTouchEvent, { passive: false });
 		// body.addEventListener("touchcancel", handleTouchEvent, { passive: false });
 	}
-	addMobileHandlers();
-	let newX1;
-	let newX2;
-	let touch;
-	let xPrim;
 
 	function handleTouchEvent(e) {
 		// console.log("handlers added");
@@ -1110,7 +843,7 @@ export function gamePage() {
 		// e.stopImmediatePropagation();
 		if (e.touches.length === 0) return;
 		if (!paused) {
-			// e.preventDefault();
+			e.preventDefault();
 			e.stopPropagation();
 			touch = e.touches[0];
 			x = touch.pageX;
@@ -1137,150 +870,431 @@ export function gamePage() {
 		}
 	}
 
-	// draw
-	let drawMain;
-	let drawBar;
-
-	// main
-	function drawGame() {
-		for (var i = 0; i < ballList.length; i++) {
-			if (ballList[i]) {
-				ballList[i].draw();
-			}
-		}
-
-		for (var i = 0; i < stickList.length; i++) {
-			// console.log(stickList);
-			stickList[i][0].draw();
-		}
-
-		for (var i = 0; i < blockList.length; i++) {
-			if (blockList[i]) {
-				blockList[i].draw();
-			}
-		}
-
-		for (var i = 0; i < boxList.length; i++) {
-			if (boxList[i]) {
-				boxList[i].draw();
-			}
-		}
-	}
-
-	function drawWelcome() {}
-
-	function drawGameOver() {
-		drawText("Game Over", "#f46f47", "32px Noto Sans", width / 4, height / 4);
-		drawText("Score " + score, "#ddd", "24px Noto Sans", width / 4, height / 4);
-	}
-
-	function drawTheEnd() {
-		drawText(
-			"The End",
-			"#61cdff",
-			"50px Saira Stencil One",
-			width / 4,
-			height / 4
+	const animationLoop = () => {
+		addMobileHandlers();
+		mainBall = new Ball(
+			movableStick.x1 + (movableStick.width - ballWidth) / 2,
+			movableStick.y1 - ballWidth * 1.3
 		);
-		drawText("Score " + score, "#ddd", "24px Noto Sans", width / 4, height / 4);
-	}
+		mainBall.isMain = true;
 
-	// bar
-	function drawBoard() {
-		// level
-		// drawText(
-		// 	"Level " + level + " / 12",
-		// 	"#eee",
-		// 	"16px Noto Sans",
-		// 	width * 0.7,
-		// 	height * 0.965
-		// );
+		const CanvasResize = () => {
+			movableStick.x1 = width / 2 - paddleWidth / 2;
+			movableStick.y1 = 0.9 * height;
+			movableStick.x2 = width / 2 + paddleWidth / 2;
+			movableStick.y2 = 0.9 * height;
+			mainBall.startY = movableStick.y1 - ballWidth * 1.5;
+			mainBall.startX = movableStick.x1 + (movableStick.width - ballWidth) / 2;
+			mainBall.coordinate.x = mainBall.startX;
+			mainBall.coordinate.y = mainBall.startY;
+			ballWidth = width / 20;
+			paddleWidth = width / 5;
+			paddleHeight = paddleWidth / 4.63;
+			blockWidth = width / 10;
+			blockHeight = blockWidth * 0.62;
+			gameHeight = Math.min(window.innerHeight, (window.innerWidth * 16) / 9);
+			gameWidth = Math.min(window.innerWidth, (window.innerHeight * 9) / 16);
+			// width = gameContainer.offsetWidth;
+			// height = gameContainer.offsetHeight;
+			windowWidth = body.offsetWidth;
+			windowHeight = body.offsetHeight;
+			// canvas.setAttribute("height", height);
+			// canvas.setAttribute("width", width);
+			topStick.x1 = 0.01 * width;
+			topStick.y1 = 0.01 * width;
+			topStick.x2 = 0.99 * width;
+			topStick.y2 = 0.01 * width;
+			leftStick.x1 = 0.01 * width;
+			leftStick.y1 = 0.01 * width;
+			leftStick.x2 = 0.01 * width;
+			leftStick.y2 = 0.99 * height;
+			rightStick.x1 = 0.99 * width;
+			rightStick.y1 = 0.01 * width;
+			rightStick.x2 = 0.99 * width;
+			rightStick.y2 = 0.99 * height;
 
-		// number of ball
-		// drawCircle(width * 0.4, height * 0.95, width * 0.01, "#c1cf94");
-		// drawText(
-		// 	"x " + numberOfBall,
-		// 	"#eee",
-		// 	"16px Noto Sans",
-		// 	width * 0.5,
-		// 	height * 0.965
-		// );
+			movableStick.width = paddleWidth;
+			movableStick.height = paddleHeight;
 
-		// score
-		// drawText(
-		// 	"Score " + score,
-		// 	"#eee",
-		// 	"16px Noto Sans",
-		// 	width * 0.1,
-		// 	height * 0.965
-		// );
-		scoreGameSpan.innerText = `Score: ${score}`;
-		livesSpan.innerText = ` x${numberOfBall + 1}`;
-		levelsSpan.innerText = `LVL: ${level}/3`;
+			if (gameContainer.width >= windowWidth) {
+				scoreContainer.classList.add("active");
+			} else {
+				scoreContainer.classList.remove("active");
+			}
+			gameContainer.style.maxHeight = `${gameHeight}px`;
+			gameContainer.style.maxWidth = `${gameWidth}px`;
+			canvas.style.maxHeight = `${gameHeight}px`;
+			canvas.style.maxWidth = `${gameWidth}px`;
+			fix_dpi();
+			width = canvas.width;
+			height = canvas.height;
+		};
 
-		// pause
-		if (paused) {
-			pauseButtonImg.src = "./public/img/02/play.png";
-		} else {
-			pauseButtonImg.src = "./public/img/02/pause.png";
-		}
-	}
+		CanvasResize();
+		window.addEventListener("resize", CanvasResize);
 
-	function drawPlayButton() {}
-	function toClick() {
-		if (drawMain == drawGame && y < height) {
-			paused = false;
-			start();
-		} else if (
-			drawBar == drawBoard &&
-			x > 370 + (window.innerWidth - canvas.width) / 2
-		) {
-			// pause button
-		}
-	}
+		class Block {
+			constructor(xInd, yInd, color, img, img2, img3) {
+				this.indexInBlockList = blockList.length;
+				blockList.push(this);
+				this.index = { x: xInd, y: yInd };
+				this.color = color;
+				this.typeOfTheBox = null;
+				mapGrid[xInd][yInd] = this;
+				numberOfUnbrokenBlocks++;
+				this.tryYourChance();
+				this.blockImg = new Image();
+				this.blockImg.src = img;
+				this.blockImg2 = new Image();
+				this.blockImg2.src = img2;
+				this.blockImg3 = new Image();
+				this.blockImg3.src = img3;
+			}
+			draw() {
+				context.drawImage(
+					this.blockImg,
+					(this.index.x * width) / 10,
+					(this.index.y * height) / 30,
+					blockWidth,
+					blockHeight
+				);
+				// drawRectangle(
+				// 	(this.index.x * widthInt) / 18 - widthInt / 40,
+				// 	(this.index.y * widthInt) / 36,
+				// 	widthInt / 20,
+				// 	widthInt / 40,
+				// 	this.color
+				// );
+			}
 
-	body.addEventListener("mousemove", (e) => {
-		getCoor(e);
-	});
+			// drawRectangle(
+			//   13 + this.index.x * 20,
+			//   13 + this.index.y * 11,
+			//   19,
+			//   10,
+			//   this.color
+			// );
 
-	pauseButtonImg.addEventListener("click", () => {
-		if (!paused) {
-			// pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
-			pauseButtonImg.src = "./public/img/02/pause.png";
-			for (var i = 0; i < ballList.length; i++) {
-				if (ballList[i]) {
-					ballList[i].buffer.x = ballList[i].route.x;
-					ballList[i].buffer.y = ballList[i].route.y;
-					ballList[i].buffer.speed = ballList[i].speed;
-					ballList[i].stop();
+			explode() {
+				mapGrid[this.index.x][this.index.y] = null;
+
+				// context.clearRect(0, 0, width, height);
+				// context.drawImage(
+				// 	this.blockImg2,
+				// 	(this.index.x * width) / 10,
+				// 	(this.index.y * height) / 30,
+				// 	blockWidth,
+				// 	blockHeight
+				// );
+				blockList[this.indexInBlockList].blockImg = this.blockImg2;
+
+				setTimeout(() => {
+					blockList[this.indexInBlockList].blockImg = this.blockImg3;
+				}, 30);
+				setTimeout(() => {
+					blockList[this.indexInBlockList] = null;
+				}, 60);
+				// console.log(blockList);
+				playSound("blockCrush");
+				numberOfUnbrokenBlocks--;
+				score += 10;
+				multipleBlock++;
+				controlForLevelUp();
+				if (this.typeOfTheBox) {
+					new Box(
+						(this.index.x * width) / 10 + blockWidth / 2 - width / 50,
+						(this.index.y * height) / 30,
+						this.typeOfTheBox
+					);
 				}
 			}
-			speedOfBoxes(0);
-			paused = true;
-		} else {
-			// pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
-			pauseButtonImg.src = "./public/img/02/play.png";
-			for (var i = 0; i < ballList.length; i++) {
-				if (ballList[i]) {
-					ballList[i].route.x = ballList[i].buffer.x;
-					ballList[i].route.y = ballList[i].buffer.y;
-					ballList[i].speed = ballList[i].buffer.speed;
+			tryYourChance() {
+				let toBeOrNotToBe = Math.floor(Math.random() * 100); // [0 - 99]
+				let which = Math.floor(Math.random() * 7); // [0 - 6]
+				let chanceforSuperBall = Math.floor(Math.random() * 3); // [0 - 2]  for superBall
+				let yesOrNoForThreeBalls = Math.floor(Math.random() * 2); // [0 - 1]  for threeBalls
+				if (toBeOrNotToBe < 10) {
+					// 10%
+					this.typeOfTheBox = threeBalls;
+					// switch (which) {
+					// 	case 0:
+					// 		this.typeOfTheBox = narrowMovableStick;
+					// 		break;
+					// 	case 1:
+					// 		this.typeOfTheBox = expandMovableStick;
+					// 		break;
+					// 	case 2:
+					// 		this.typeOfTheBox = speedUp;
+					// 		break;
+					// 	case 3:
+					// 		this.typeOfTheBox = speedDown;
+					// 		break;
+					// 	case 4:
+					// 		this.typeOfTheBox = killBall;
+					// 		break;
+					// 	case 5:
+					// 		// superBall is excellent so I want to be rare it :d
+					// 		// this.typeOfTheBox = killBall;
+					// 		// if (chanceforSuperBall == 0) {
+					// 		this.typeOfTheBox = superBall;
+					// 		// }
+					// 		break;
+					// 	case 6:
+					// 		// this.typeOfTheBox = killBall;
+					// 		// if (yesOrNoForThreeBalls == 0) {
+					// 		this.typeOfTheBox = threeBalls;
+					// 		// }
+					// 		break;
+					// }
 				}
 			}
-			speedOfBoxes(1);
-			paused = false;
 		}
-		// console.log(paused);
-	});
 
-	drawMain = drawWelcome;
-	drawBar = drawPlayButton;
+		// other functions
 
-	// for animate
-	window.requestAnimationFrame(gameLoop);
-	canvas.addEventListener("click", () => {
-		toClick();
-	});
-	gamePlay();
+		function controlForLevelUp() {
+			if (!numberOfUnbrokenBlocks) {
+				levelUp();
+			}
+		}
+
+		function start() {
+			if (!paused && mainBall.readyToGo) {
+				mainBall.readyToGo = false;
+				mainBall.go(90, speedOfBall);
+			}
+		}
+
+		function addToScore(point) {
+			score += point;
+		}
+
+		function levelUp() {
+			addToScore(100 * level + Math.pow(multipleBlock, 2));
+			level++;
+			numberOfBall++;
+			mainBall.reset();
+			if (level != 4) {
+				setTimeout(() => {
+					loadLevel(level);
+				}, 100);
+			} else {
+				scorePage(score);
+			}
+		}
+
+		function gamePlay() {
+			numberOfBall = 2;
+			level = 1;
+			score = 0;
+			loadLevel(level);
+			drawMain = drawGame;
+			drawBar = drawBoard;
+		}
+
+		function loadLevel(index) {
+			playSound("levelUp");
+			numberOfUnbrokenBlocks = 0;
+			clearBoxList();
+			clearMapGrid();
+			clearBlockList();
+			// to load for each block in the level
+			for (var i = 0; i < levels[index].length; i++) {
+				new Block(
+					levels[index][i].xInd,
+					levels[index][i].yInd,
+					levels[index][i].color,
+					levels[index][i].img,
+					levels[index][i].img2,
+					levels[index][i].img3
+				);
+			}
+		}
+
+		function clearBlockList() {
+			blockList = [];
+		}
+
+		// movableStick.x1 = width / 2 - width / 12;
+		// movableStick.x2 = width / 2 + width / 12;
+		function getCoor(e) {
+			// console.log("desktop handler added");
+			if (!paused) {
+				x = e.clientX;
+				y = e.clientY;
+				newX1 = x - (window.innerWidth - canvas.width + movableStick.width) / 2;
+				// console.log(x, window.innerWidth, canvas.width, movableStick.width);
+				newX2 = newX1 + movableStick.width;
+				movableStick.x1 = newX1;
+				movableStick.x2 = newX2;
+				if (newX1 < 10) {
+					movableStick.x1 = 10;
+					movableStick.x2 = movableStick.width + 10;
+				} else if (newX2 > canvas.width - 10) {
+					movableStick.x1 = canvas.width - 10 - movableStick.width;
+					movableStick.x2 = canvas.width - 10;
+				}
+
+				if (mainBall.readyToGo) {
+					mainBall.updatePositionOnMovableStick();
+				}
+			}
+		}
+
+		// main
+		function drawGame() {
+			for (var i = 0; i < ballList.length; i++) {
+				if (ballList[i]) {
+					ballList[i].draw();
+				}
+			}
+
+			for (var i = 0; i < stickList.length; i++) {
+				// console.log(stickList);
+				stickList[i][0].draw();
+			}
+
+			for (var i = 0; i < blockList.length; i++) {
+				if (blockList[i]) {
+					blockList[i].draw();
+				}
+			}
+
+			for (var i = 0; i < boxList.length; i++) {
+				if (boxList[i]) {
+					boxList[i].draw();
+				}
+			}
+		}
+
+		function drawWelcome() {}
+
+		function drawGameOver() {
+			drawText("Game Over", "#f46f47", "32px Noto Sans", width / 4, height / 4);
+			drawText(
+				"Score " + score,
+				"#ddd",
+				"24px Noto Sans",
+				width / 4,
+				height / 4
+			);
+		}
+
+		function drawTheEnd() {
+			drawText(
+				"The End",
+				"#61cdff",
+				"50px Saira Stencil One",
+				width / 4,
+				height / 4
+			);
+			drawText(
+				"Score " + score,
+				"#ddd",
+				"24px Noto Sans",
+				width / 4,
+				height / 4
+			);
+		}
+
+		// bar
+		function drawBoard() {
+			// level
+			// drawText(
+			// 	"Level " + level + " / 12",
+			// 	"#eee",
+			// 	"16px Noto Sans",
+			// 	width * 0.7,
+			// 	height * 0.965
+			// );
+
+			// number of ball
+			// drawCircle(width * 0.4, height * 0.95, width * 0.01, "#c1cf94");
+			// drawText(
+			// 	"x " + numberOfBall,
+			// 	"#eee",
+			// 	"16px Noto Sans",
+			// 	width * 0.5,
+			// 	height * 0.965
+			// );
+
+			// score
+			// drawText(
+			// 	"Score " + score,
+			// 	"#eee",
+			// 	"16px Noto Sans",
+			// 	width * 0.1,
+			// 	height * 0.965
+			// );
+			scoreGameSpan.innerText = `Score: ${score}`;
+			livesSpan.innerText = ` x${numberOfBall + 1}`;
+			levelsSpan.innerText = `LVL: ${level}/3`;
+
+			// pause
+			if (paused) {
+				pauseButtonImg.src = "./public/img/02/play.png";
+			} else {
+				pauseButtonImg.src = "./public/img/02/pause.png";
+			}
+		}
+
+		function drawPlayButton() {}
+		function toClick() {
+			if (drawMain == drawGame && y < height) {
+				paused = false;
+				start();
+			} else if (
+				drawBar == drawBoard &&
+				x > 370 + (window.innerWidth - canvas.width) / 2
+			) {
+				// pause button
+			}
+		}
+
+		body.addEventListener("mousemove", (e) => {
+			getCoor(e);
+		});
+
+		pauseButtonImg.addEventListener("click", () => {
+			if (!paused) {
+				// pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/pause.png">`;
+				pauseButtonImg.src = "./public/img/02/pause.png";
+				for (var i = 0; i < ballList.length; i++) {
+					if (ballList[i]) {
+						ballList[i].buffer.x = ballList[i].route.x;
+						ballList[i].buffer.y = ballList[i].route.y;
+						ballList[i].buffer.speed = ballList[i].speed;
+						ballList[i].stop();
+					}
+				}
+				speedOfBoxes(0);
+				paused = true;
+			} else {
+				// pauseButton.innerHTML = `<img id="pauseButtonImg" src="./public/img/02/play.png">`;
+				pauseButtonImg.src = "./public/img/02/play.png";
+				for (var i = 0; i < ballList.length; i++) {
+					if (ballList[i]) {
+						ballList[i].route.x = ballList[i].buffer.x;
+						ballList[i].route.y = ballList[i].buffer.y;
+						ballList[i].speed = ballList[i].buffer.speed;
+					}
+				}
+				speedOfBoxes(1);
+				paused = false;
+			}
+			// console.log(paused);
+		});
+
+		drawMain = drawWelcome;
+		drawBar = drawPlayButton;
+
+		// for animate
+		window.requestAnimationFrame(gameLoop);
+		gamePlay();
+		canvas.addEventListener("click", () => {
+			toClick();
+		});
+	};
+	animationLoop();
 }
 gamePage();
